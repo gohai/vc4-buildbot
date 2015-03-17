@@ -5,7 +5,7 @@ import subprocess
 
 # make sure to delete the directory when changing this
 LINUX_GIT_REPO = "https://github.com/anholt/linux.git"
-LINUX_GIT_BRANCH = "vc4-3.18"
+LINUX_GIT_BRANCH = "vc4-kms-v3d"
 DATA_DIR = os.getcwd()
 MAKE_OPTS = "-j3"
 
