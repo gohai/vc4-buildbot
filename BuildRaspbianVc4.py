@@ -3,9 +3,11 @@
 import os
 import subprocess
 
-# make sure to delete the directory when changing this
+# XXX: handle changed git repo URLs
 LINUX_GIT_REPO = "https://github.com/anholt/linux.git"
 LINUX_GIT_BRANCH = "vc4-kms-v3d"
+MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
+MESA_GIT_BRANCH = "master"
 DATA_DIR = os.getcwd()
 MAKE_OPTS = "-j3"
 
@@ -149,9 +151,10 @@ def buildLibXShmFence():
 def buildMesa():
 	subprocess.check_call("apt-get -y install bison flex python-mako libx11-dev libx11-xcb-dev libxext-dev libxdamage-dev libxfixes-dev libudev-dev libexpat-dev gettext", shell=True)
 	if not os.path.exists("/usr/local/src/mesa"):
-		subprocess.check_call("git clone git://anongit.freedesktop.org/mesa/mesa /usr/local/src/mesa", shell=True)
+		subprocess.check_call("git clone " + MESA_GIT_REPO + " /usr/local/src/mesa", shell=True)
 	os.chdir("/usr/local/src/mesa")
 	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("git checkout -f " + MESA_GIT_BRANCH, shell=True)
 	# workaround https://bugs.freedesktop.org/show_bug.cgi?id=80848
 	subprocess.check_call("mkdir /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("mv /usr/lib/arm-linux-gnueabihf/libxcb* /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
