@@ -135,7 +135,7 @@ def buildPresentProto():
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
 
-def buildLibXshmfence():
+def buildLibXShmFence():
 	if not os.path.exists("/usr/local/src/libxshmfence"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/lib/libxshmfence /usr/local/src/libxshmfence", shell=True)
 	os.chdir("/usr/local/src/libxshmfence")
@@ -145,19 +145,6 @@ def buildLibXshmfence():
 	subprocess.check_call("make install", shell=True)
 	subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
-
-# not needed
-#def buildLibX11():
-#	subprocess.check_call("apt-get -y install x11proto-xext-dev xtrans-dev x11proto-kb-dev x11proto-input-dev", shell=True)
-#	if not os.path.exists("/usr/local/src/libx11"):
-#		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/lib/libX11 /usr/local/src/libx11", shell=True)
-#	os.chdir("/usr/local/src/libx11")
-#	subprocess.check_call("git pull", shell=True)
-#	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
-#	subprocess.check_call("make " + MAKE_OPTS, shell=True)
-#	subprocess.check_call("make install", shell=True)
-#	subprocess.check_call("make clean", shell=True)
-#	subprocess.check_call("ldconfig", shell=True)
 
 def buildMesa():
 	subprocess.check_call("apt-get -y install bison flex python-mako libx11-dev libx11-xcb-dev libxext-dev libxdamage-dev libxfixes-dev libudev-dev libexpat-dev gettext", shell=True)
@@ -176,9 +163,100 @@ def buildMesa():
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
 	subprocess.check_call("make clean", shell=True)
+	# undo workaround
 	subprocess.check_call("mv /usr/lib/arm-linux-gnueabihf/tmp-libxcb/* /usr/lib/arm-linux-gnueabihf", shell=True)
 	subprocess.check_call("rmdir /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
+
+def buildXTrans():
+	# xserver: Requested 'xtrans >= 1.3.5' but version of XTrans is 1.2.7
+	if not os.path.exists("/usr/local/src/libxtrans"):
+		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/lib/libxtrans /usr/local/src/libxtrans", shell=True)
+	os.chdir("/usr/local/src/libxtrans")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	subprocess.check_call("make clean", shell=True)
+
+def buildXProto():
+	# xserver: Requested 'xproto >= 7.0.26' but version of Xproto is 7.0.23
+	if not os.path.exists("/usr/local/src/xproto"):
+		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/xproto /usr/local/src/xproto", shell=True)
+	os.chdir("/usr/local/src/xproto")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	subprocess.check_call("make clean", shell=True)
+
+def buildXExtProto():
+	# xserver: Requested 'xextproto >= 7.2.99.901' but version of XExtProto is 7.2.1
+	if not os.path.exists("/usr/local/src/xextproto"):
+		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/xextproto /usr/local/src/xextproto", shell=True)
+	os.chdir("/usr/local/src/xextproto")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	subprocess.check_call("make clean", shell=True)
+
+def buildInputProto():
+	# xserver: Requested 'inputproto >= 2.3' but version of InputProto is 2.2
+	if not os.path.exists("/usr/local/src/inputproto"):
+		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/inputproto /usr/local/src/inputproto", shell=True)
+	os.chdir("/usr/local/src/inputproto")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	subprocess.check_call("make clean", shell=True)
+
+def buildRandrProto():
+	# xserver: Requested 'randrproto >= 1.4.0' but version of RandrProto is 1.3.2
+	if not os.path.exists("/usr/local/src/randrproto"):
+		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/randrproto /usr/local/src/randrproto", shell=True)
+	os.chdir("/usr/local/src/randrproto")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	subprocess.check_call("make clean", shell=True)
+
+def buildFontsProto():
+	# xserver: Requested 'fontsproto >= 2.1.3' but version of FontsProto is 2.1.2
+	if not os.path.exists("/usr/local/src/fontsproto"):
+		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/fontsproto /usr/local/src/fontsproto", shell=True)
+	os.chdir("/usr/local/src/fontsproto")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	subprocess.check_call("make clean", shell=True)
+
+def buildLibEpoxy():
+	# xserver: needed for glamor
+	if not os.path.exists("/usr/local/src/libepoxy"):
+		subprocess.check_call("git clone https://github.com/anholt/libepoxy.git /usr/local/src/libepoxy", shell=True)
+	os.chdir("/usr/local/src/libepoxy")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	subprocess.check_call("make clean", shell=True)
+	subprocess.check_call("ldconfig", shell=True)
+
+def buildXServer():
+	subprocess.check_call("apt-get -y install libpixman-1-dev libssl-dev x11proto-xcmisc-dev x11proto-bigreqs-dev x11proto-render-dev x11proto-video-dev x11proto-composite-dev x11proto-record-dev x11proto-scrnsaver-dev x11proto-resource-dev x11proto-xf86dri-dev x11proto-xinerama-dev libxkbfile-dev libxfont-dev libpciaccess-dev libxcb-keysyms1-dev", shell=True)
+	# without libxcb-keysyms1-dev compiling fails with "Keyboard.c:21:29: fatal error: xcb/xcb_keysyms.h: No such file or directory compilation terminated.
+	if not os.path.exists("/usr/local/src/xserver"):
+		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/xserver /usr/local/src/xserver", shell=True)
+	os.chdir("/usr/local/src/xserver")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --enable-glamor --enable-dri2 --enable-dri3 --enable-present", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	subprocess.check_call("make clean", shell=True)
 
 # XXX: check root?
 
@@ -195,5 +273,14 @@ buildLibDrm()
 buildDri2Proto()
 buildDri3Proto()
 buildPresentProto()
-buildLibXshmfence()
+buildLibXShmFence()
 buildMesa()
+
+buildXTrans()
+buildXProto()
+buildXExtProto()
+buildInputProto()
+buildRandrProto()
+buildFontsProto()
+buildLibEpoxy()
+buildXServer()
