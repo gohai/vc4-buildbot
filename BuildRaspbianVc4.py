@@ -2,14 +2,20 @@
 
 import os
 import subprocess
+import re
 
 # XXX: handle changed git repo URLs
 LINUX_GIT_REPO = "https://github.com/anholt/linux.git"
-LINUX_GIT_BRANCH = "vc4-kms-v3d"
+LINUX_GIT_BRANCH = "vc4-3.18"
 MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
 MESA_GIT_BRANCH = "master"
 DATA_DIR = os.getcwd()
 MAKE_OPTS = "-j3"
+CLEANUP = 1
+
+def checkRoot():
+	if os.geteuid() != 0:
+		exit("You need to have root privileges to run this script")
 
 def buildLinux():
 	# install dependencies
@@ -27,10 +33,14 @@ def buildLinux():
 	# compile for 2708
 	subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("cp " + DATA_DIR + "/config-2708 .config", shell=True)
+	# XXX: change localversion
 	subprocess.check_call("make olddefconfig", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
-	subprocess.check_call("make modules_install", shell=True)
+	#subprocess.check_call("make bcm2835-rpi-b.dtb", shell=True)
+	#subprocess.check_call("cp arch/arm/boot/dts/bcm2835-rpi-b.dtb /boot/bcm2708-rpi-b.dtb", shell=True)
+	#subprocess.check_call("make bcm2835-rpi-b-plus.dtb", shell=True)
+	#subprocess.check_call("cp arch/arm/boot/dts/bcm2835-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb", shell=True)
 	# this signals to the bootloader that device tree is supported
 	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel.img", shell=True)
@@ -42,14 +52,43 @@ def buildLinux():
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
 	subprocess.check_call("make modules_install", shell=True)
+	# XXX: this is currently missing the dtb for bcm2836
 	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel7.img", shell=True)
 	subprocess.check_call("cp .config /boot/kernel7.img-config", shell=True)
-	# clean up
-	# XXX: flag
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 
-def changeLdConfig():
+# helper functions used in updateConfigTxt
+def file_get_contents(fn):
+		with open(fn) as f:
+			return f.read()
+
+def file_put_contents(fn, s):
+		with open(fn, 'w') as f:
+			f.write(s)
+
+def updateConfigTxt():
+	txt = file_get_contents("/boot/config.txt")
+	added_comment = 0
+	# set mask_gpu_interrupt0=0x400
+	match = re.findall(r'^mask_gpu_interrupt0=(.*)$', txt, re.MULTILINE)
+	if 0 < len(match):
+		txt = re.sub(r'(^)mask_gpu_interrupt0=(.*)($)', r'\1mask_gpu_interrupt0=0x400\3', txt, 0, re.MULTILINE)
+	else:
+		txt = txt.strip() + "\n\n" + "# added for vc4 driver\n" + "mask_gpu_interrupt0=0x400\n"
+		added_comment = 1
+	# set avoid_warnings=1 to remove warning overlay
+	match = re.findall(r'^avoid_warnings=(.*)$', txt, re.MULTILINE)
+	if 0 < len(match):
+		txt = re.sub(r'(^)avoid_warnings=(.*)($)', r'\1avoid_warnings=1\3', txt, 0, re.MULTILINE)
+	else:
+		if not added_comment:
+			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
+		txt = txt + "avoid_warnings=1\n"
+	file_put_contents("/boot/config.txt", txt)
+
+def updateLdConfig():
 	# this makes /usr/local/lib come before /{usr/,}lib/arm-linux-gnueabihf
 	if not os.path.exists("/etc/ld.so.conf.d/01-libc.conf"):
 		subprocess.check_call("mv /etc/ld.so.conf.d/libc.conf /etc/ld.so.conf.d/01-libc.conf", shell=True)
@@ -61,7 +100,7 @@ def buildXorgMacros():
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/util/macros /usr/local/src/xorg-macros", shell=True)
 	os.chdir("/usr/local/src/xorg-macros")
 	subprocess.check_call("git pull", shell=True)
-	subprocess.check_call("./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
 
@@ -70,10 +109,11 @@ def buildXcbProto():
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xcb/proto /usr/local/src/xcb-proto", shell=True)
 	os.chdir("/usr/local/src/xcb-proto")
 	subprocess.check_call("git pull", shell=True)
-	subprocess.check_call("./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 
 def buildLibXcb():
 	# needed to prevent xcb_poll_for_special_event linker error when installing mesa
@@ -86,7 +126,8 @@ def buildLibXcb():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
 
 def buildGlProto():
@@ -104,10 +145,11 @@ def buildLibDrm():
 	os.chdir("/usr/local/src/libdrm")
 	subprocess.check_call("git pull", shell=True)
 	# XXX: this also builds libraries for nouveau, radeon etc, which aren't needed
-	subprocess.check_call("./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
 
 def buildDri2Proto():
@@ -120,6 +162,7 @@ def buildDri2Proto():
 	subprocess.check_call("make install", shell=True)
 
 def buildDri3Proto():
+	# unavailable in raspbian
 	if not os.path.exists("/usr/local/src/dri3proto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/dri3proto /usr/local/src/dri3proto", shell=True)
 	os.chdir("/usr/local/src/dri3proto")
@@ -129,6 +172,7 @@ def buildDri3Proto():
 	subprocess.check_call("make install", shell=True)
 
 def buildPresentProto():
+	# unavailable in raspbian
 	if not os.path.exists("/usr/local/src/presentproto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/presentproto /usr/local/src/presentproto", shell=True)
 	os.chdir("/usr/local/src/presentproto")
@@ -138,6 +182,7 @@ def buildPresentProto():
 	subprocess.check_call("make install", shell=True)
 
 def buildLibXShmFence():
+	# unavailable in raspbian
 	if not os.path.exists("/usr/local/src/libxshmfence"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/lib/libxshmfence /usr/local/src/libxshmfence", shell=True)
 	os.chdir("/usr/local/src/libxshmfence")
@@ -145,7 +190,8 @@ def buildLibXShmFence():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
 
 def buildMesa():
@@ -156,16 +202,17 @@ def buildMesa():
 	subprocess.check_call("git pull", shell=True)
 	subprocess.check_call("git checkout -f " + MESA_GIT_BRANCH, shell=True)
 	# workaround https://bugs.freedesktop.org/show_bug.cgi?id=80848
-	subprocess.check_call("mkdir /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
+	subprocess.call("mkdir /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("mv /usr/lib/arm-linux-gnueabihf/libxcb* /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
 	# XXX: unsure if swrast is needed
 	# XXX: this complains about libva missing at some point, but continues
 	# XXX: Shader cache: no
-	subprocess.check_call("./autogen.sh --prefix=/usr/local --with-gallium-drivers=vc4 --enable-gles1 --enable-gles2 --with-egl-platforms=x11,drm --with-dri-drivers=swrast --enable-dri3", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --with-gallium-drivers=vc4 --enable-gles1 --enable-gles2 --with-egl-platforms=x11,drm --with-dri-drivers=swrast --enable-dri3", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 	# undo workaround
 	subprocess.check_call("mv /usr/lib/arm-linux-gnueabihf/tmp-libxcb/* /usr/lib/arm-linux-gnueabihf", shell=True)
 	subprocess.check_call("rmdir /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
@@ -180,7 +227,8 @@ def buildXTrans():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 
 def buildXProto():
 	# xserver: Requested 'xproto >= 7.0.26' but version of Xproto is 7.0.23
@@ -191,7 +239,8 @@ def buildXProto():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 
 def buildXExtProto():
 	# xserver: Requested 'xextproto >= 7.2.99.901' but version of XExtProto is 7.2.1
@@ -202,7 +251,8 @@ def buildXExtProto():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 
 def buildInputProto():
 	# xserver: Requested 'inputproto >= 2.3' but version of InputProto is 2.2
@@ -213,7 +263,8 @@ def buildInputProto():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 
 def buildRandrProto():
 	# xserver: Requested 'randrproto >= 1.4.0' but version of RandrProto is 1.3.2
@@ -224,7 +275,8 @@ def buildRandrProto():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 
 def buildFontsProto():
 	# xserver: Requested 'fontsproto >= 2.1.3' but version of FontsProto is 2.1.2
@@ -235,10 +287,11 @@ def buildFontsProto():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 
 def buildLibEpoxy():
-	# xserver: needed for glamor
+	# xserver: needed for glamor, unavailable in raspbian
 	if not os.path.exists("/usr/local/src/libepoxy"):
 		subprocess.check_call("git clone https://github.com/anholt/libepoxy.git /usr/local/src/libepoxy", shell=True)
 	os.chdir("/usr/local/src/libepoxy")
@@ -246,8 +299,21 @@ def buildLibEpoxy():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
+
+def buildInputEvdev():
+	# ABI major version on raspbian is 16 (vs. currently 22), so build evdev module
+	if not os.path.exists("/usr/local/src/xf86-input-evdev"):
+		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/driver/xf86-input-evdev /usr/local/src/xf86-input-evdev", shell=True)
+	os.chdir("/usr/local/src/xf86-input-evdev")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 
 def buildXServer():
 	subprocess.check_call("apt-get -y install libpixman-1-dev libssl-dev x11proto-xcmisc-dev x11proto-bigreqs-dev x11proto-render-dev x11proto-video-dev x11proto-composite-dev x11proto-record-dev x11proto-scrnsaver-dev x11proto-resource-dev x11proto-xf86dri-dev x11proto-xinerama-dev libxkbfile-dev libxfont-dev libpciaccess-dev libxcb-keysyms1-dev", shell=True)
@@ -259,15 +325,22 @@ def buildXServer():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --enable-glamor --enable-dri2 --enable-dri3 --enable-present", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
-	subprocess.check_call("make clean", shell=True)
+	# copy xorg.conf
+	subprocess.call("mkdir /usr/local/etc/X11", shell=True)
+	subprocess.check_call("cp "+DATA_DIR+"/xorg.conf /usr/local/etc/X11", shell=True)
+	# workaround "XKB: Couldn't open rules file /usr/local/share/X11/xkb/rules/$"
+	subprocess.check_call("ln -s /usr/share/X11/xkb/rules /usr/local/share/X11/xkb/rules")
+	# workaround "XKB: Failed to compile keymap"
+	subprocess.check_call("ln -s /usr/bin/xkbcomp /usr/local/bin/xkbcomp")
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
 
-# XXX: check root?
 
+checkRoot()
 buildLinux()
-# XXX: config.txt
-
-changeLdConfig()
-
+updateConfigTxt()
+updateLdConfig()
+# mesa and friends
 buildXorgMacros()
 buildXcbProto()
 buildLibXcb()
@@ -278,7 +351,7 @@ buildDri3Proto()
 buildPresentProto()
 buildLibXShmFence()
 buildMesa()
-
+# xserver and friends
 buildXTrans()
 buildXProto()
 buildXExtProto()
@@ -286,4 +359,8 @@ buildInputProto()
 buildRandrProto()
 buildFontsProto()
 buildLibEpoxy()
+#buildInputEvdev()
 buildXServer()
+
+# XXX: issue.json
+# XXX: package
