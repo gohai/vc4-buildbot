@@ -29,6 +29,11 @@ def DeleteTempFiles():
 	subprocess.call("rm /tmp/*-vc4*", shell=True)
 
 def BuildRaspbianVc4():
+	# preserve original kernel on build machine
+	# XXX: flag
+	# XXX: still leaves a window for things to go wrong
+	subprocess.check_call("cp /boot/kernel.img /boot/kernel.img.orig", shell=True)
+	subprocess.check_call("cp /boot/kernel7.img /boot/kernel7.img.orig", shell=True)
 	ret = subprocess.call(SCRIPT_DIR + "/BuildRaspbianVc4.py >/tmp/" + PREFIX + ".log 2>&1", shell=True)
 	if not ret:
 		subprocess.call("mv /tmp/" + PREFIX + ".log /tmp/" + PREFIX + "-success.log", shell=True)
@@ -36,6 +41,8 @@ def BuildRaspbianVc4():
 	else:
 		subprocess.call("mv /tmp/" + PREFIX + ".log /tmp/" + PREFIX + "-failure.log", shell=True)
 		subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-failure.log", shell=True)
+	subprocess.check_call("mv /boot/kernel.img.orig /boot/kernel.img", shell=True)
+	subprocess.check_call("mv /boot/kernel7.img.orig /boot/kernel7.img", shell=True)
 	return ret
 
 def TarRaspbianVc4():
@@ -45,12 +52,12 @@ def TarRaspbianVc4():
 	subprocess.check_call("bzip2 -9 /tmp/" + PREFIX + ".tar", shell=True)
 
 
+# XXX: pull latest vc4-buildbot script
 # XXX: umask?
 checkRoot()
 killHangingBuilds()
 UploadTempFiles()
 DeleteTempFiles()
-# XXX: preserve kernel on build machine?
 ret = BuildRaspbianVc4()
 if not ret:
 	# success
