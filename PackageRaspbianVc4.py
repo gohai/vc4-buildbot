@@ -68,3 +68,7 @@ if not ret:
 # else:
 #	there might be a temporary connectivity issue
 #	in this case we'll try again next time this script is run
+
+# XXX: limit login to scp?
+# XXX: delete old builds on the server
+# XXX: ~/.ssh mode 700?

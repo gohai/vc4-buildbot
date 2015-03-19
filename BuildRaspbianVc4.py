@@ -352,6 +352,9 @@ def buildInputEvdev():
 		subprocess.check_call("make clean", shell=True)
 
 
+# XXX: apt-get update?
+# XXX: any benefits of using a later version of libdri? (https://github.com/robclark/libdri2.git)
+
 checkRoot()
 buildLinux()
 updateConfigTxt()
