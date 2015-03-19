@@ -9,7 +9,7 @@ LINUX_GIT_REPO = "https://github.com/anholt/linux.git"
 LINUX_GIT_BRANCH = "vc4-3.18"
 MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
 MESA_GIT_BRANCH = "master"
-DATA_DIR = os.getcwd()
+DATA_DIR = os.path.dirname(os.path.realpath(__file__))
 MAKE_OPTS = "-j3"
 CLEANUP = 1
 
@@ -37,6 +37,7 @@ def buildLinux():
 	subprocess.check_call("make olddefconfig", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
+	subprocess.check_call("make modules_install", shell=True)
 	#subprocess.check_call("make bcm2835-rpi-b.dtb", shell=True)
 	#subprocess.check_call("cp arch/arm/boot/dts/bcm2835-rpi-b.dtb /boot/bcm2708-rpi-b.dtb", shell=True)
 	#subprocess.check_call("make bcm2835-rpi-b-plus.dtb", shell=True)
@@ -303,18 +304,6 @@ def buildLibEpoxy():
 		subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
 
-def buildInputEvdev():
-	# ABI major version on raspbian is 16 (vs. currently 22), so build evdev module
-	if not os.path.exists("/usr/local/src/xf86-input-evdev"):
-		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/driver/xf86-input-evdev /usr/local/src/xf86-input-evdev", shell=True)
-	os.chdir("/usr/local/src/xf86-input-evdev")
-	subprocess.check_call("git pull", shell=True)
-	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
-	subprocess.check_call("make " + MAKE_OPTS, shell=True)
-	subprocess.check_call("make install", shell=True)
-	if CLEANUP:
-		subprocess.check_call("make clean", shell=True)
-
 def buildXServer():
 	subprocess.check_call("apt-get -y install libpixman-1-dev libssl-dev x11proto-xcmisc-dev x11proto-bigreqs-dev x11proto-render-dev x11proto-video-dev x11proto-composite-dev x11proto-record-dev x11proto-scrnsaver-dev x11proto-resource-dev x11proto-xf86dri-dev x11proto-xinerama-dev libxkbfile-dev libxfont-dev libpciaccess-dev libxcb-keysyms1-dev", shell=True)
 	# without libxcb-keysyms1-dev compiling fails with "Keyboard.c:21:29: fatal error: xcb/xcb_keysyms.h: No such file or directory compilation terminated.
@@ -329,9 +318,35 @@ def buildXServer():
 	subprocess.call("mkdir /usr/local/etc/X11", shell=True)
 	subprocess.check_call("cp "+DATA_DIR+"/xorg.conf /usr/local/etc/X11", shell=True)
 	# workaround "XKB: Couldn't open rules file /usr/local/share/X11/xkb/rules/$"
-	subprocess.check_call("ln -s /usr/share/X11/xkb/rules /usr/local/share/X11/xkb/rules")
+	subprocess.check_call("ln -s /usr/share/X11/xkb/rules /usr/local/share/X11/xkb/rules", shell=True)
 	# workaround "XKB: Failed to compile keymap"
-	subprocess.check_call("ln -s /usr/bin/xkbcomp /usr/local/bin/xkbcomp")
+	subprocess.check_call("ln -s /usr/bin/xkbcomp /usr/local/bin/xkbcomp", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
+
+def buildLibEvdev():
+	# >= 0.4 needed for xf86-input-evdev
+	if not os.path.exists("/usr/local/src/libevdev"):
+		subprocess.check_call("git clone git://anongit.freedesktop.org/libevdev /usr/local/src/libevdev", shell=True)
+	os.chdir("/usr/local/src/libevdev")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
+	subprocess.check_call("ldconfig", shell=True)
+
+def buildInputEvdev():
+	# ABI major version on raspbian is 16 (vs. currently 22), so build evdev module
+	subprocess.check_call("apt-get -y install libmtdev-dev", shell=True)
+	if not os.path.exists("/usr/local/src/xf86-input-evdev"):
+		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/driver/xf86-input-evdev /usr/local/src/xf86-input-evdev", shell=True)
+	os.chdir("/usr/local/src/xf86-input-evdev")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
 
@@ -359,8 +374,9 @@ buildInputProto()
 buildRandrProto()
 buildFontsProto()
 buildLibEpoxy()
-#buildInputEvdev()
 buildXServer()
+# xserver modules
+buildLibEvdev()
+buildInputEvdev()
 
 # XXX: issue.json
-# XXX: package
