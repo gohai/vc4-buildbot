@@ -319,9 +319,9 @@ def buildXServer():
 	subprocess.call("mkdir /usr/local/etc/X11", shell=True)
 	subprocess.check_call("cp "+DATA_DIR+"/xorg.conf /usr/local/etc/X11", shell=True)
 	# workaround "XKB: Couldn't open rules file /usr/local/share/X11/xkb/rules/$"
-	subprocess.check_call("ln -s /usr/share/X11/xkb/rules /usr/local/share/X11/xkb/rules", shell=True)
+	subprocess.call("ln -s /usr/share/X11/xkb/rules /usr/local/share/X11/xkb/rules", shell=True)
 	# workaround "XKB: Failed to compile keymap"
-	subprocess.check_call("ln -s /usr/bin/xkbcomp /usr/local/bin/xkbcomp", shell=True)
+	subprocess.call("ln -s /usr/bin/xkbcomp /usr/local/bin/xkbcomp", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
 
