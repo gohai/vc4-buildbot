@@ -29,11 +29,6 @@ def DeleteTempFiles():
 	subprocess.call("rm /tmp/*-vc4*", shell=True)
 
 def BuildRaspbianVc4():
-	# preserve original kernel on build machine
-	# XXX: flag
-	# XXX: still leaves a window for things to go wrong
-	subprocess.check_call("cp /boot/kernel.img /boot/kernel.img.orig", shell=True)
-	subprocess.check_call("cp /boot/kernel7.img /boot/kernel7.img.orig", shell=True)
 	ret = subprocess.call(SCRIPT_DIR + "/BuildRaspbianVc4.py >/tmp/" + PREFIX + ".log 2>&1", shell=True)
 	if not ret:
 		subprocess.call("mv /tmp/" + PREFIX + ".log /tmp/" + PREFIX + "-success.log", shell=True)
@@ -41,15 +36,13 @@ def BuildRaspbianVc4():
 	else:
 		subprocess.call("mv /tmp/" + PREFIX + ".log /tmp/" + PREFIX + "-failure.log", shell=True)
 		subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-failure.log", shell=True)
-	subprocess.check_call("mv /boot/kernel.img.orig /boot/kernel.img", shell=True)
-	subprocess.check_call("mv /boot/kernel7.img.orig /boot/kernel7.img", shell=True)
 	return ret
 
 def TarRaspbianVc4():
 	# XXX: optionally include src
 	# XXX: better to temp. move original dir?
-	subprocess.check_call("tar cfp /tmp/" + PREFIX + ".tar /boot/config.txt /boot/kernel.img /boot/kernel.img-config /boot/kernel7.img /boot/kernel7.img-config /etc/ld.so.conf.d/01-libc.conf /lib/modules/*-raspbian-* /usr/local --exclude=\"/usr/local/bin/indiecity\" --exclude=\"/usr/local/games\" --exclude=\"/usr/local/lib/python*\" --exclude=\"/usr/local/lib/site_ruby\" --exclude=\"/usr/local/src\" --exclude=\"/usr/local/sbin\" --exclude=\"/usr/local/share/applications\" --exclude=\"/usr/local/share/ca-certificates\" --exclude=\"/usr/local/share/fonts\" --exclude=\"/usr/local/share/sgml\" --exclude=\"/usr/local/share/xml\" >/dev/null", shell=True)
-	subprocess.check_call("bzip2 -9 /tmp/" + PREFIX + ".tar", shell=True)
+	subprocess.call("tar cfp /tmp/" + PREFIX + "-overlay.tar /boot/config.txt /boot/kernel.img /boot/kernel.img-config /boot/kernel7.img /boot/kernel7.img-config /etc/ld.so.conf.d/01-libc.conf /lib/modules/*-raspbian-* /usr/local --exclude=\"/usr/local/bin/indiecity\" --exclude=\"/usr/local/games\" --exclude=\"/usr/local/lib/python*\" --exclude=\"/usr/local/lib/site_ruby\" --exclude=\"/usr/local/src\" --exclude=\"/usr/local/sbin\" --exclude=\"/usr/local/share/applications\" --exclude=\"/usr/local/share/ca-certificates\" --exclude=\"/usr/local/share/fonts\" --exclude=\"/usr/local/share/sgml\" --exclude=\"/usr/local/share/xml\" >/dev/null", shell=True)
+	subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-overlay.tar", shell=True)
 
 
 # XXX: pull latest vc4-buildbot script
@@ -58,10 +51,16 @@ checkRoot()
 killHangingBuilds()
 UploadTempFiles()
 DeleteTempFiles()
+# preserve original kernel on build machine
+subprocess.call("cp /boot/kernel.img /boot/kernel.img.orig", shell=True)
+subprocess.call("cp /boot/kernel7.img /boot/kernel7.img.orig", shell=True)
 ret = BuildRaspbianVc4()
 if not ret:
 	# success
 	TarRaspbianVc4()
+# restore original kernel
+subprocess.call("mv /boot/kernel.img.orig /boot/kernel.img", shell=True)
+subprocess.call("mv /boot/kernel7.img.orig /boot/kernel7.img", shell=True)
 ret = UploadTempFiles()
 if not ret:
 	DeleteTempFiles()

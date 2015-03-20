@@ -17,50 +17,6 @@ def checkRoot():
 	if os.geteuid() != 0:
 		exit("You need to have root privileges to run this script")
 
-def buildLinux():
-	# install dependencies
-	subprocess.check_call("apt-get -y install bc", shell=True)
-	if not os.path.exists("/usr/local/src/raspberrypi-tools"):
-		subprocess.check_call("git clone https://github.com/raspberrypi/tools /usr/local/src/raspberrypi-tools", shell=True)
-	os.chdir("/usr/local/src/raspberrypi-tools")
-	subprocess.check_call("git pull", shell=True)
-	# get up-to-date git tree
-	if not os.path.exists("/usr/local/src/linux"):
-		subprocess.check_call("git clone " + LINUX_GIT_REPO + " /usr/local/src/linux ", shell=True)
-	os.chdir("/usr/local/src/linux")
-	subprocess.check_call("git pull", shell=True)
-	subprocess.check_call("git checkout -f " + LINUX_GIT_BRANCH, shell=True)
-	# compile for 2708
-	subprocess.check_call("make clean", shell=True)
-	subprocess.check_call("cp " + DATA_DIR + "/config-2708 .config", shell=True)
-	# XXX: change localversion, document changes to raspbian original
-	subprocess.check_call("make olddefconfig", shell=True)
-	subprocess.check_call("make " + MAKE_OPTS, shell=True)
-	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
-	# XXX: remove old module versions
-	subprocess.check_call("make modules_install", shell=True)
-	#subprocess.check_call("make bcm2835-rpi-b.dtb", shell=True)
-	#subprocess.check_call("cp arch/arm/boot/dts/bcm2835-rpi-b.dtb /boot/bcm2708-rpi-b.dtb", shell=True)
-	#subprocess.check_call("make bcm2835-rpi-b-plus.dtb", shell=True)
-	#subprocess.check_call("cp arch/arm/boot/dts/bcm2835-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb", shell=True)
-	# this signals to the bootloader that device tree is supported
-	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
-	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel.img", shell=True)
-	subprocess.check_call("cp .config /boot/kernel.img-config", shell=True)
-	# compile for 2709
-	subprocess.check_call("make clean", shell=True)
-	subprocess.check_call("cp " + DATA_DIR + "/config-2709 .config", shell=True)
-	subprocess.check_call("make olddefconfig", shell=True)
-	subprocess.check_call("make " + MAKE_OPTS, shell=True)
-	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
-	subprocess.check_call("make modules_install", shell=True)
-	# XXX: this is currently missing the dtb for bcm2836
-	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
-	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel7.img", shell=True)
-	subprocess.check_call("cp .config /boot/kernel7.img-config", shell=True)
-	if CLEANUP:
-		subprocess.check_call("make clean", shell=True)
-
 # helper functions used in updateConfigTxt
 def file_get_contents(fn):
 		with open(fn) as f:
@@ -351,12 +307,55 @@ def buildInputEvdev():
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
 
+def buildLinux():
+	# install dependencies
+	subprocess.check_call("apt-get -y install bc", shell=True)
+	if not os.path.exists("/usr/local/src/raspberrypi-tools"):
+		subprocess.check_call("git clone https://github.com/raspberrypi/tools /usr/local/src/raspberrypi-tools", shell=True)
+	os.chdir("/usr/local/src/raspberrypi-tools")
+	subprocess.check_call("git pull", shell=True)
+	# get up-to-date git tree
+	if not os.path.exists("/usr/local/src/linux"):
+		subprocess.check_call("git clone " + LINUX_GIT_REPO + " /usr/local/src/linux ", shell=True)
+	os.chdir("/usr/local/src/linux")
+	subprocess.check_call("git pull", shell=True)
+	subprocess.check_call("git checkout -f " + LINUX_GIT_BRANCH, shell=True)
+	# compile for 2708
+	subprocess.check_call("make clean", shell=True)
+	subprocess.check_call("cp " + DATA_DIR + "/config-2708 .config", shell=True)
+	# XXX: change localversion, document changes to raspbian original
+	subprocess.check_call("make olddefconfig", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
+	# XXX: remove old module versions
+	subprocess.check_call("make modules_install", shell=True)
+	#subprocess.check_call("make bcm2835-rpi-b.dtb", shell=True)
+	#subprocess.check_call("cp arch/arm/boot/dts/bcm2835-rpi-b.dtb /boot/bcm2708-rpi-b.dtb", shell=True)
+	#subprocess.check_call("make bcm2835-rpi-b-plus.dtb", shell=True)
+	#subprocess.check_call("cp arch/arm/boot/dts/bcm2835-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb", shell=True)
+	# this signals to the bootloader that device tree is supported
+	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
+	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel.img", shell=True)
+	subprocess.check_call("cp .config /boot/kernel.img-config", shell=True)
+	# compile for 2709
+	subprocess.check_call("make clean", shell=True)
+	subprocess.check_call("cp " + DATA_DIR + "/config-2709 .config", shell=True)
+	subprocess.check_call("make olddefconfig", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
+	subprocess.check_call("make modules_install", shell=True)
+	# XXX: this is currently missing the dtb for bcm2836
+	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
+	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel7.img", shell=True)
+	subprocess.check_call("cp .config /boot/kernel7.img-config", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
+
 
 # XXX: apt-get update?
 # XXX: any benefits of using a later version of libdri? (https://github.com/robclark/libdri2.git)
 
 checkRoot()
-buildLinux()
 updateConfigTxt()
 updateLdConfig()
 # mesa and friends
@@ -382,5 +381,9 @@ buildXServer()
 # xserver modules
 buildLibEvdev()
 buildInputEvdev()
+# build kernel last to minimize window where we would boot an
+# untested kernel on power outage etc
+# XXX: test order with vanilla Raspbian
+buildLinux()
 
 # XXX: issue.json
