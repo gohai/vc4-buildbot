@@ -53,8 +53,8 @@ UploadTempFiles()
 DeleteTempFiles()
 # preserve original kernel and device tree on build machine
 subprocess.call("cp /boot/kernel.img /boot/kernel.img.orig", shell=True)
-subprocess.check("cp /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b.dtb.orig", shell=True)
-subprocess.check("cp /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb.orig", shell=True)
+subprocess.call("cp /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b.dtb.orig", shell=True)
+subprocess.call("cp /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb.orig", shell=True)
 subprocess.call("cp /boot/kernel7.img /boot/kernel7.img.orig", shell=True)
 ret = BuildRaspbianVc4()
 if not ret:
@@ -62,8 +62,8 @@ if not ret:
 	TarRaspbianVc4()
 # restore original kernel
 subprocess.call("mv /boot/kernel.img.orig /boot/kernel.img", shell=True)
-subprocess.check("mv /boot/bcm2708-rpi-b.dtb.orig /boot/bcm2708-rpi-b.dtb", shell=True)
-subprocess.check("mv /boot/bcm2708-rpi-b-plus.dtb.orig /boot/bcm2708-rpi-b-plus.dtb", shell=True)
+subprocess.call("mv /boot/bcm2708-rpi-b.dtb.orig /boot/bcm2708-rpi-b.dtb", shell=True)
+subprocess.call("mv /boot/bcm2708-rpi-b-plus.dtb.orig /boot/bcm2708-rpi-b-plus.dtb", shell=True)
 subprocess.call("mv /boot/kernel7.img.orig /boot/kernel7.img", shell=True)
 ret = UploadTempFiles()
 if not ret:
