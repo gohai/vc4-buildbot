@@ -26,7 +26,7 @@ def UploadTempFiles():
 	return ret
 
 def DeleteTempFiles():
-	subprocess.call("rm /tmp/*-vc4*", shell=True)
+	subprocess.call("rm -f /tmp/*-vc4*", shell=True)
 
 def BuildRaspbianVc4():
 	ret = subprocess.call(SCRIPT_DIR + "/BuildRaspbianVc4.py >/tmp/" + PREFIX + ".log 2>&1", shell=True)
