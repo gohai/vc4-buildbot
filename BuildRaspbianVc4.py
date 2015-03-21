@@ -4,7 +4,6 @@ import os
 import subprocess
 import re
 
-# XXX: handle changed git repo URLs
 LINUX_GIT_REPO = "https://github.com/anholt/linux.git"
 LINUX_GIT_BRANCH = "vc4-kms-v3d"
 MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
@@ -57,7 +56,7 @@ def buildXorgMacros():
 	if not os.path.exists("/usr/local/src/xorg-macros"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/util/macros /usr/local/src/xorg-macros", shell=True)
 	os.chdir("/usr/local/src/xorg-macros")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
@@ -66,7 +65,7 @@ def buildXcbProto():
 	if not os.path.exists("/usr/local/src/xcb-proto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xcb/proto /usr/local/src/xcb-proto", shell=True)
 	os.chdir("/usr/local/src/xcb-proto")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -79,7 +78,7 @@ def buildLibXcb():
 	if not os.path.exists("/usr/local/src/libxcb"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xcb/libxcb /usr/local/src/libxcb", shell=True)
 	os.chdir("/usr/local/src/libxcb")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	# xorg-macros.m4 got installed outside of the regular search path of aclocal
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
@@ -92,7 +91,7 @@ def buildGlProto():
 	if not os.path.exists("/usr/local/src/glproto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/glproto /usr/local/src/glproto", shell=True)
 	os.chdir("/usr/local/src/glproto")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
@@ -101,7 +100,7 @@ def buildLibDrm():
 	if not os.path.exists("/usr/local/src/libdrm"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/mesa/drm /usr/local/src/libdrm", shell=True)
 	os.chdir("/usr/local/src/libdrm")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	# XXX: this also builds libraries for nouveau, radeon etc, which aren't needed
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
@@ -114,7 +113,7 @@ def buildDri2Proto():
 	if not os.path.exists("/usr/local/src/dri2proto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/dri2proto /usr/local/src/dri2proto", shell=True)
 	os.chdir("/usr/local/src/dri2proto")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
@@ -124,7 +123,7 @@ def buildDri3Proto():
 	if not os.path.exists("/usr/local/src/dri3proto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/dri3proto /usr/local/src/dri3proto", shell=True)
 	os.chdir("/usr/local/src/dri3proto")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
@@ -134,7 +133,7 @@ def buildPresentProto():
 	if not os.path.exists("/usr/local/src/presentproto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/presentproto /usr/local/src/presentproto", shell=True)
 	os.chdir("/usr/local/src/presentproto")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
@@ -144,7 +143,7 @@ def buildLibXShmFence():
 	if not os.path.exists("/usr/local/src/libxshmfence"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/lib/libxshmfence /usr/local/src/libxshmfence", shell=True)
 	os.chdir("/usr/local/src/libxshmfence")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -157,8 +156,9 @@ def buildMesa():
 	if not os.path.exists("/usr/local/src/mesa"):
 		subprocess.check_call("git clone " + MESA_GIT_REPO + " /usr/local/src/mesa", shell=True)
 	os.chdir("/usr/local/src/mesa")
-	subprocess.check_call("git pull", shell=True)
-	subprocess.check_call("git checkout -f " + MESA_GIT_BRANCH, shell=True)
+	subprocess.check_call("git remote set-url origin " + MESA_GIT_REPO)
+	subprocess.call("git fetch", shell=True)
+	subprocess.check_call("git checkout -f -B " + MESA_GIT_BRANCH + " origin/" + MESA_GIT_BRANCH, shell=True)
 	# workaround https://bugs.freedesktop.org/show_bug.cgi?id=80848
 	subprocess.call("mkdir /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("mv /usr/lib/arm-linux-gnueabihf/libxcb* /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
@@ -181,7 +181,7 @@ def buildXTrans():
 	if not os.path.exists("/usr/local/src/libxtrans"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/lib/libxtrans /usr/local/src/libxtrans", shell=True)
 	os.chdir("/usr/local/src/libxtrans")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -193,7 +193,7 @@ def buildXProto():
 	if not os.path.exists("/usr/local/src/xproto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/xproto /usr/local/src/xproto", shell=True)
 	os.chdir("/usr/local/src/xproto")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -205,7 +205,7 @@ def buildXExtProto():
 	if not os.path.exists("/usr/local/src/xextproto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/xextproto /usr/local/src/xextproto", shell=True)
 	os.chdir("/usr/local/src/xextproto")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -217,7 +217,7 @@ def buildInputProto():
 	if not os.path.exists("/usr/local/src/inputproto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/inputproto /usr/local/src/inputproto", shell=True)
 	os.chdir("/usr/local/src/inputproto")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -229,7 +229,7 @@ def buildRandrProto():
 	if not os.path.exists("/usr/local/src/randrproto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/randrproto /usr/local/src/randrproto", shell=True)
 	os.chdir("/usr/local/src/randrproto")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -241,7 +241,7 @@ def buildFontsProto():
 	if not os.path.exists("/usr/local/src/fontsproto"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/proto/fontsproto /usr/local/src/fontsproto", shell=True)
 	os.chdir("/usr/local/src/fontsproto")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -253,7 +253,7 @@ def buildLibEpoxy():
 	if not os.path.exists("/usr/local/src/libepoxy"):
 		subprocess.check_call("git clone https://github.com/anholt/libepoxy.git /usr/local/src/libepoxy", shell=True)
 	os.chdir("/usr/local/src/libepoxy")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -267,7 +267,7 @@ def buildXServer():
 	if not os.path.exists("/usr/local/src/xserver"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/xserver /usr/local/src/xserver", shell=True)
 	os.chdir("/usr/local/src/xserver")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --enable-glamor --enable-dri2 --enable-dri3 --enable-present", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -286,7 +286,7 @@ def buildLibEvdev():
 	if not os.path.exists("/usr/local/src/libevdev"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/libevdev /usr/local/src/libevdev", shell=True)
 	os.chdir("/usr/local/src/libevdev")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -300,7 +300,7 @@ def buildInputEvdev():
 	if not os.path.exists("/usr/local/src/xf86-input-evdev"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/driver/xf86-input-evdev /usr/local/src/xf86-input-evdev", shell=True)
 	os.chdir("/usr/local/src/xf86-input-evdev")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
@@ -313,13 +313,15 @@ def buildLinux():
 	if not os.path.exists("/usr/local/src/raspberrypi-tools"):
 		subprocess.check_call("git clone https://github.com/raspberrypi/tools /usr/local/src/raspberrypi-tools", shell=True)
 	os.chdir("/usr/local/src/raspberrypi-tools")
-	subprocess.check_call("git pull", shell=True)
+	subprocess.call("git pull", shell=True)
 	# get up-to-date git tree
 	if not os.path.exists("/usr/local/src/linux"):
 		subprocess.check_call("git clone " + LINUX_GIT_REPO + " /usr/local/src/linux ", shell=True)
 	os.chdir("/usr/local/src/linux")
-	subprocess.check_call("git pull", shell=True)
-	subprocess.check_call("git checkout -f " + LINUX_GIT_BRANCH, shell=True)
+	subprocess.check_call("git remote set-url origin " + LINUX_GIT_REPO)
+	subprocess.call("git fetch", shell=True)
+	# XXX: temp hack
+	#subprocess.check_call("git checkout -f -B " + LINUX_GIT_BRANCH + " origin/" + LINUX_GIT_BRANCH, shell=True)
 	# compile for 2708
 	subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("cp " + DATA_DIR + "/config-2708 .config", shell=True)
