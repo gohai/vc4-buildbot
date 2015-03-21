@@ -11,6 +11,10 @@ UPLOAD_HOST = "sukzessiv.net"
 UPLOAD_USER = "vc4-buildbot"
 UPLOAD_KEY = os.path.dirname(os.path.realpath(__file__)) + "/sukzessiv-net.pem"
 UPLOAD_PATH = "~/upload/"
+# this can be determined from fdisk *.img
+RASPBIAN_IMG_BYTES_PER_SECTOR = 512
+RASPBIAN_IMG_START_SECTOR_VFAT = 8192
+RASPBIAN_IMG_START_SECTOR_EXT4 = 122880
 
 def checkRoot():
 	if os.geteuid() != 0:
@@ -43,7 +47,31 @@ def TarRaspbianVc4():
 	# XXX: better to temp. move original dir?
 	subprocess.call("tar cfp /tmp/" + PREFIX + "-overlay.tar /boot/config.txt /boot/kernel.img /boot/kernel.img-config /boot/kernel7.img /boot/kernel7.img-config /etc/ld.so.conf.d/01-libc.conf /lib/modules/*-raspbian-* /usr/local --exclude=\"/usr/local/bin/indiecity\" --exclude=\"/usr/local/games\" --exclude=\"/usr/local/lib/python*\" --exclude=\"/usr/local/lib/site_ruby\" --exclude=\"/usr/local/src\" --exclude=\"/usr/local/sbin\" --exclude=\"/usr/local/share/applications\" --exclude=\"/usr/local/share/ca-certificates\" --exclude=\"/usr/local/share/fonts\" --exclude=\"/usr/local/share/sgml\" --exclude=\"/usr/local/share/xml\" >/dev/null", shell=True)
 	subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-overlay.tar", shell=True)
+	return "/tmp/" + PREFIX + "-overlay.tar.bz2"
 
+def BuildRaspbianImage(overlay):
+	subprocess.check_call("apt-get -y install zip", shell=True)
+	os.chdir("/tmp")
+	# make sure we have the latest version
+	subprocess.call("wget -N http://downloads.raspberrypi.org/raspbian_latest", shell=True)
+	subprocess.check_call("rm -Rf /tmp/raspbian-vc4", shell=True)
+	subprocess.check_call("mkdir /tmp/raspbian-vc4", shell=True)
+	os.chdir("/tmp/raspbian-vc4")
+	subprocess.check_call("unzip ../raspbian_latest", shell=True)
+	# this should yield one .img file inside /tmp/raspbian-vc4
+	subprocess.check_call("mkdir /tmp/raspbian-vc4/live", shell=True)
+	subprocess.check_call("mount -o offset=" + str(RASPBIAN_IMG_START_SECTOR_EXT4 * RASPBIAN_IMG_BYTES_PER_SECTOR) + " -t ext4 *.img live", shell=True)
+	subprocess.check_call("mount -o offset=" + str(RASPBIAN_IMG_START_SECTOR_VFAT * RASPBIAN_IMG_BYTES_PER_SECTOR) + " -t vfat *.img live/boot", shell=True)
+	os.chdir("/tmp/raspbian-vc4/live")
+	subprocess.check_call("tar vfxp " + overlay, shell=True)
+	os.chdir("/tmp/raspbian-vc4")
+	subprocess.check_call("umount live/boot", shell=True)
+	subprocess.check_call("umount live", shell=True)
+	subprocess.check_call("zip -9 ../" + PREFIX +"-image.zip *.img", shell=True)
+	os.chdir("/tmp")
+	subprocess.check_call("rm -Rf /tmp/raspbian-vc4", shell=True)
+	# we keep raspbian_latest around for future invocations (although it looks like /tmp gets cleaned?)
+	return "/tmp/" + PREFIX + "-image.zip"
 
 # XXX: pull latest vc4-buildbot script
 # XXX: umask?
@@ -59,16 +87,18 @@ subprocess.call("cp /boot/kernel7.img /boot/kernel7.img.orig", shell=True)
 ret = BuildRaspbianVc4()
 if not ret:
 	# success
-	TarRaspbianVc4()
+	tar = TarRaspbianVc4()
 # restore original kernel
 subprocess.call("mv /boot/kernel.img.orig /boot/kernel.img", shell=True)
 subprocess.call("mv /boot/bcm2708-rpi-b.dtb.orig /boot/bcm2708-rpi-b.dtb", shell=True)
 subprocess.call("mv /boot/bcm2708-rpi-b-plus.dtb.orig /boot/bcm2708-rpi-b-plus.dtb", shell=True)
 subprocess.call("mv /boot/kernel7.img.orig /boot/kernel7.img", shell=True)
+if not ret:
+	BuildRaspbianImage(tar)
 ret = UploadTempFiles()
 if not ret:
 	DeleteTempFiles()
-# else:
+#else:
 #	there might be a temporary connectivity issue
 #	in this case we'll try again next time this script is run
 
