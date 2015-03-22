@@ -156,7 +156,7 @@ def buildMesa():
 	if not os.path.exists("/usr/local/src/mesa"):
 		subprocess.check_call("git clone " + MESA_GIT_REPO + " /usr/local/src/mesa", shell=True)
 	os.chdir("/usr/local/src/mesa")
-	subprocess.check_call("git remote set-url origin " + MESA_GIT_REPO)
+	subprocess.check_call("git remote set-url origin " + MESA_GIT_REPO, shell=True)
 	subprocess.call("git fetch", shell=True)
 	subprocess.check_call("git checkout -f -B " + MESA_GIT_BRANCH + " origin/" + MESA_GIT_BRANCH, shell=True)
 	# workaround https://bugs.freedesktop.org/show_bug.cgi?id=80848
@@ -318,7 +318,7 @@ def buildLinux():
 	if not os.path.exists("/usr/local/src/linux"):
 		subprocess.check_call("git clone " + LINUX_GIT_REPO + " /usr/local/src/linux ", shell=True)
 	os.chdir("/usr/local/src/linux")
-	subprocess.check_call("git remote set-url origin " + LINUX_GIT_REPO)
+	subprocess.check_call("git remote set-url origin " + LINUX_GIT_REPO, shell=True)
 	subprocess.call("git fetch", shell=True)
 	# XXX: temp hack
 	#subprocess.check_call("git checkout -f -B " + LINUX_GIT_BRANCH + " origin/" + LINUX_GIT_BRANCH, shell=True)
