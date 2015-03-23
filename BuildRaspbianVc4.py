@@ -3,6 +3,7 @@
 import os
 import subprocess
 import re
+import json
 
 LINUX_GIT_REPO = "https://github.com/anholt/linux.git"
 LINUX_GIT_BRANCH_2708 = "vc4-kms-v3d"
@@ -12,6 +13,8 @@ MESA_GIT_BRANCH = "master"
 DATA_DIR = os.path.dirname(os.path.realpath(__file__))
 MAKE_OPTS = "-j3"
 CLEANUP = 1
+
+issue = {}
 
 def checkRoot():
 	if os.geteuid() != 0:
@@ -52,6 +55,13 @@ def updateLdConfig():
 		subprocess.check_call("mv /etc/ld.so.conf.d/libc.conf /etc/ld.so.conf.d/01-libc.conf", shell=True)
 	subprocess.check_call("ldconfig")
 
+def getGitInfo():
+	info = {}
+	info['commit'] = subprocess.check_output("git rev-parse HEAD", shell=True).rstrip()
+	info['branch'] = subprocess.check_output("git rev-parse --abbrev-ref HEAD", shell=True).rstrip()
+	info['url'] = subprocess.check_output("git config --get remote.origin.url", shell=True).rstrip()
+	return info
+
 def buildXorgMacros():
 	subprocess.check_call("apt-get -y install autoconf", shell=True)
 	if not os.path.exists("/usr/local/src/xorg-macros"):
@@ -61,6 +71,7 @@ def buildXorgMacros():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
+	issue['xorg-macros'] = getGitInfo()
 
 def buildXcbProto():
 	if not os.path.exists("/usr/local/src/xcb-proto"):
@@ -72,6 +83,7 @@ def buildXcbProto():
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
+	issue['xcb-proto'] = getGitInfo()
 
 def buildLibXcb():
 	# needed to prevent xcb_poll_for_special_event linker error when installing mesa
@@ -87,6 +99,7 @@ def buildLibXcb():
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
+	issue['libxcb'] = getGitInfo()
 
 def buildGlProto():
 	if not os.path.exists("/usr/local/src/glproto"):
@@ -96,6 +109,7 @@ def buildGlProto():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
+	issue['glproto'] = getGitInfo()
 
 def buildLibDrm():
 	if not os.path.exists("/usr/local/src/libdrm"):
@@ -109,6 +123,7 @@ def buildLibDrm():
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
+	issue['libdrm'] = getGitInfo()
 
 def buildDri2Proto():
 	if not os.path.exists("/usr/local/src/dri2proto"):
@@ -118,6 +133,7 @@ def buildDri2Proto():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
+	issue['dri2proto'] = getGitInfo()
 
 def buildDri3Proto():
 	# unavailable in raspbian
@@ -128,6 +144,7 @@ def buildDri3Proto():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
+	issue['dri3proto'] = getGitInfo()
 
 def buildPresentProto():
 	# unavailable in raspbian
@@ -138,6 +155,7 @@ def buildPresentProto():
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
+	issue['presentproto'] = getGitInfo()
 
 def buildLibXShmFence():
 	# unavailable in raspbian
@@ -151,6 +169,7 @@ def buildLibXShmFence():
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
+	issue['libxshmfence'] = getGitInfo()
 
 def buildMesa():
 	subprocess.check_call("apt-get -y install bison flex python-mako libx11-dev libx11-xcb-dev libxext-dev libxdamage-dev libxfixes-dev libudev-dev libexpat-dev gettext", shell=True)
@@ -176,6 +195,7 @@ def buildMesa():
 	subprocess.check_call("mv /usr/lib/arm-linux-gnueabihf/tmp-libxcb/* /usr/lib/arm-linux-gnueabihf", shell=True)
 	subprocess.check_call("rmdir /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
+	issue['mesa'] = getGitInfo()
 
 def buildXTrans():
 	# xserver: Requested 'xtrans >= 1.3.5' but version of XTrans is 1.2.7
@@ -188,6 +208,7 @@ def buildXTrans():
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
+	issue['xtrans'] = getGitInfo()
 
 def buildXProto():
 	# xserver: Requested 'xproto >= 7.0.26' but version of Xproto is 7.0.23
@@ -200,6 +221,7 @@ def buildXProto():
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
+	issue['xproto'] = getGitInfo()
 
 def buildXExtProto():
 	# xserver: Requested 'xextproto >= 7.2.99.901' but version of XExtProto is 7.2.1
@@ -212,6 +234,7 @@ def buildXExtProto():
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
+	issue['xextproto'] = getGitInfo()
 
 def buildInputProto():
 	# xserver: Requested 'inputproto >= 2.3' but version of InputProto is 2.2
@@ -224,6 +247,7 @@ def buildInputProto():
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
+	issue['inputproto'] = getGitInfo()
 
 def buildRandrProto():
 	# xserver: Requested 'randrproto >= 1.4.0' but version of RandrProto is 1.3.2
@@ -236,6 +260,7 @@ def buildRandrProto():
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
+	issue['randrproto'] = getGitInfo()
 
 def buildFontsProto():
 	# xserver: Requested 'fontsproto >= 2.1.3' but version of FontsProto is 2.1.2
@@ -248,6 +273,7 @@ def buildFontsProto():
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
+	issue['fontsproto'] = getGitInfo()
 
 def buildLibEpoxy():
 	# xserver: needed for glamor, unavailable in raspbian
@@ -261,6 +287,7 @@ def buildLibEpoxy():
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
+	issue['libepoxy'] = getGitInfo()
 
 def buildXServer():
 	subprocess.check_call("apt-get -y install libpixman-1-dev libssl-dev x11proto-xcmisc-dev x11proto-bigreqs-dev x11proto-render-dev x11proto-video-dev x11proto-composite-dev x11proto-record-dev x11proto-scrnsaver-dev x11proto-resource-dev x11proto-xf86dri-dev x11proto-xinerama-dev libxkbfile-dev libxfont-dev libpciaccess-dev libxcb-keysyms1-dev", shell=True)
@@ -281,6 +308,7 @@ def buildXServer():
 	subprocess.call("ln -s /usr/bin/xkbcomp /usr/local/bin/xkbcomp", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
+	issue['xserver'] = getGitInfo()
 
 def buildLibEvdev():
 	# >= 0.4 needed for xf86-input-evdev
@@ -294,6 +322,7 @@ def buildLibEvdev():
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
+	issue['libevdev'] = getGitInfo()
 
 def buildInputEvdev():
 	# ABI major version on raspbian is 16 (vs. currently 22), so build evdev module
@@ -307,6 +336,7 @@ def buildInputEvdev():
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
+	issue['xf86-input-evdev'] = getGitInfo()
 
 def buildLinux():
 	# install dependencies
@@ -318,6 +348,7 @@ def buildLinux():
 	# get up-to-date git tree
 	if not os.path.exists("/usr/local/src/linux"):
 		subprocess.check_call("git clone " + LINUX_GIT_REPO + " /usr/local/src/linux ", shell=True)
+	issue['raspberrypi-tools'] = getGitInfo()
 	os.chdir("/usr/local/src/linux")
 	subprocess.check_call("git remote set-url origin " + LINUX_GIT_REPO, shell=True)
 	subprocess.call("git fetch", shell=True)
@@ -339,6 +370,7 @@ def buildLinux():
 	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel.img", shell=True)
 	subprocess.check_call("cp .config /boot/kernel.img-config", shell=True)
+	issue['linux-2708'] = getGitInfo()
 	# compile a downstream kernel for 2709
 	subprocess.check_call("git checkout -f -B " + LINUX_GIT_BRANCH_2709 + " origin/" + LINUX_GIT_BRANCH_2709, shell=True)
 	subprocess.check_call("make clean", shell=True)
@@ -354,6 +386,13 @@ def buildLinux():
 	subprocess.check_call("cp .config /boot/kernel7.img-config", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
+	issue['linux-2709'] = getGitInfo()
+
+def buildIssueJson():
+	os.chdir(os.path.dirname(os.path.realpath(__file__)))
+	issue['vc4-buildbot'] = getGitInfo()
+	s = json.dumps(issue, sort_keys=True, indent=4, separators=(',', ': '))
+	file_put_contents("/boot/issue-vc4.json", s)
 
 
 # XXX: apt-get update?
@@ -389,5 +428,4 @@ buildInputEvdev()
 # untested kernel on power outage etc
 # XXX: test order with vanilla Raspbian
 buildLinux()
-
-# XXX: issue.json
+buildIssueJson()
