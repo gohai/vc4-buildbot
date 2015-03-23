@@ -5,7 +5,8 @@ import subprocess
 import re
 
 LINUX_GIT_REPO = "https://github.com/anholt/linux.git"
-LINUX_GIT_BRANCH = "vc4-kms-v3d"
+LINUX_GIT_BRANCH_2708 = "vc4-kms-v3d"
+LINUX_GIT_BRANCH_2709 = "vc4-3.18"
 MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
 MESA_GIT_BRANCH = "master"
 DATA_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -320,9 +321,8 @@ def buildLinux():
 	os.chdir("/usr/local/src/linux")
 	subprocess.check_call("git remote set-url origin " + LINUX_GIT_REPO, shell=True)
 	subprocess.call("git fetch", shell=True)
-	# XXX: temp hack
-	#subprocess.check_call("git checkout -f -B " + LINUX_GIT_BRANCH + " origin/" + LINUX_GIT_BRANCH, shell=True)
-	# compile for 2708
+	# compile an upstream kernel for 2708
+	subprocess.check_call("git checkout -f -B " + LINUX_GIT_BRANCH_2708 + " origin/" + LINUX_GIT_BRANCH_2708, shell=True)
 	subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("cp " + DATA_DIR + "/config-2708 .config", shell=True)
 	# XXX: change localversion, document changes to raspbian original
@@ -339,15 +339,17 @@ def buildLinux():
 	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel.img", shell=True)
 	subprocess.check_call("cp .config /boot/kernel.img-config", shell=True)
-	# compile for 2709
+	# compile a downstream kernel for 2709
+	subprocess.check_call("git checkout -f -B " + LINUX_GIT_BRANCH_2709 + " origin/" + LINUX_GIT_BRANCH_2709, shell=True)
 	subprocess.check_call("make clean", shell=True)
 	subprocess.check_call("cp " + DATA_DIR + "/config-2709 .config", shell=True)
 	subprocess.check_call("make olddefconfig", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
 	subprocess.check_call("make modules_install", shell=True)
-	# there's currently no dt for 2709 in vc4-kms-v3d, so try without device tree support there
-	#subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
+	subprocess.check_call("make bcm2709-rpi-2-b.dtb", shell=True)
+	subprocess.check_call("cp arch/arm/boot/dts/bcm2709-rpi-2-b.dtb /boot/bcm2709-rpi-2-b.dtb", shell=True)
+	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel7.img", shell=True)
 	subprocess.check_call("cp .config /boot/kernel7.img-config", shell=True)
 	if CLEANUP:
