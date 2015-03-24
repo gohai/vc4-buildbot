@@ -116,8 +116,7 @@ def buildLibDrm():
 		subprocess.check_call("git clone git://anongit.freedesktop.org/mesa/drm /usr/local/src/libdrm", shell=True)
 	os.chdir("/usr/local/src/libdrm")
 	subprocess.call("git pull", shell=True)
-	# XXX: this also builds libraries for nouveau, radeon etc, which aren't needed
-	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --disable-vmwgfx --disable-radeon --disable-nouveau", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
@@ -396,7 +395,6 @@ def buildIssueJson():
 
 
 # XXX: apt-get update?
-# XXX: any benefits of using a later version of libdri? (https://github.com/robclark/libdri2.git)
 
 checkRoot()
 updateConfigTxt()
