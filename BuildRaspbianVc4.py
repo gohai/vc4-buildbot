@@ -359,9 +359,9 @@ def buildLinux():
 	# XXX: change localversion, document changes to raspbian original
 	subprocess.check_call("make olddefconfig", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
-	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
+	#subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
 	# XXX: remove old module versions
-	subprocess.check_call("make modules_install", shell=True)
+	#subprocess.check_call("make modules_install", shell=True)
 	subprocess.check_call("make bcm2835-rpi-b.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/bcm2835-rpi-b.dtb /boot/bcm2708-rpi-b.dtb", shell=True)
 	subprocess.check_call("make bcm2835-rpi-b-plus.dtb", shell=True)
