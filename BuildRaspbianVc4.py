@@ -6,7 +6,7 @@ import re
 import json
 
 LINUX_GIT_REPO_2708 = "https://github.com/anholt/linux.git"
-LINUX_GIT_BRANCH_2708 = "vc4-kms-v3d"
+LINUX_GIT_BRANCH_2708 = "vc4-3.18"
 LINUX_GIT_REPO_2709 = "https://github.com/anholt/linux.git"
 LINUX_GIT_BRANCH_2709 = "vc4-3.18"
 MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
@@ -359,13 +359,13 @@ def buildLinux():
 	# XXX: change localversion, document changes to raspbian original
 	subprocess.check_call("make olddefconfig", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
-	#subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
 	# XXX: remove old module versions
-	#subprocess.check_call("make modules_install", shell=True)
-	subprocess.check_call("make bcm2835-rpi-b.dtb", shell=True)
-	subprocess.check_call("cp arch/arm/boot/dts/bcm2835-rpi-b.dtb /boot/bcm2708-rpi-b.dtb", shell=True)
-	subprocess.check_call("make bcm2835-rpi-b-plus.dtb", shell=True)
-	subprocess.check_call("cp arch/arm/boot/dts/bcm2835-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb", shell=True)
+	subprocess.check_call("make modules_install", shell=True)
+	subprocess.check_call("make bcm2708-rpi-b.dtb", shell=True)
+	subprocess.check_call("cp arch/arm/boot/dts/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b.dtb", shell=True)
+	subprocess.check_call("make bcm2708-rpi-b-plus.dtb", shell=True)
+	subprocess.check_call("cp arch/arm/boot/dts/bcm2708-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb", shell=True)
 	# this signals to the bootloader that device tree is supported
 	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel.img", shell=True)
