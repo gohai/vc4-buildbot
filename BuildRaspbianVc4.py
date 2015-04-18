@@ -350,7 +350,7 @@ def buildLinux():
 	subprocess.call("git pull", shell=True)
 	# get up-to-date git tree
 	if not os.path.exists("/usr/local/src/linux"):
-		subprocess.check_call("git clone " + LINUX_GIT_REPO + " /usr/local/src/linux ", shell=True)
+		subprocess.check_call("git clone " + LINUX_GIT_REPO_2708 + " /usr/local/src/linux ", shell=True)
 	issue['raspberrypi-tools'] = getGitInfo()
 	os.chdir("/usr/local/src/linux")
 	# compile an upstream kernel for 2708
