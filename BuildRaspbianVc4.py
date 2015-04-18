@@ -429,6 +429,5 @@ buildLibEvdev()
 buildInputEvdev()
 # build kernel last to minimize window where we would boot an
 # untested kernel on power outage etc
-# XXX: test order with vanilla Raspbian
 buildLinux()
 buildIssueJson()
