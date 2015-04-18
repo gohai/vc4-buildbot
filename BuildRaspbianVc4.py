@@ -21,6 +21,9 @@ def checkRoot():
 	if os.geteuid() != 0:
 		exit("You need to have root privileges to run this script")
 
+def updateHostApt():
+	subprocess.check_call("apt-get -y update", shell=True)
+
 # helper functions used in updateConfigTxt
 def file_get_contents(fn):
 		with open(fn) as f:
@@ -397,9 +400,8 @@ def buildIssueJson():
 	file_put_contents("/boot/issue-vc4.json", s)
 
 
-# XXX: apt-get update?
-
 checkRoot()
+updateHostApt()
 updateConfigTxt()
 updateLdConfig()
 # mesa and friends
