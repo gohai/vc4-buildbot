@@ -65,6 +65,11 @@ def BuildRaspbianImage(overlay):
 	subprocess.check_call("mount -o offset=" + str(RASPBIAN_IMG_START_SECTOR_VFAT * RASPBIAN_IMG_BYTES_PER_SECTOR) + " -t vfat *.img live/boot", shell=True)
 	os.chdir("/tmp/raspbian-vc4/live")
 	subprocess.check_call("tar vfxp " + overlay, shell=True)
+	# enable sshd by default
+	subprocess.check_call("ln -s ../init.d/ssh etc/rc2.d/S02ssh", shell=True)
+	subprocess.check_call("ln -s ../init.d/ssh etc/rc3.d/S02ssh", shell=True)
+	subprocess.check_call("ln -s ../init.d/ssh etc/rc4.d/S02ssh", shell=True)
+	subprocess.check_call("ln -s ../init.d/ssh etc/rc5.d/S02ssh", shell=True)
 	os.chdir("/tmp/raspbian-vc4")
 	subprocess.check_call("umount live/boot", shell=True)
 	subprocess.check_call("umount live", shell=True)
