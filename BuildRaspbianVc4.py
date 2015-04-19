@@ -358,7 +358,7 @@ def buildLinux():
 	subprocess.check_call("git remote set-url origin " + LINUX_GIT_REPO_2708, shell=True)
 	subprocess.call("git fetch", shell=True)
 	subprocess.check_call("git checkout -f -B " + LINUX_GIT_BRANCH_2708 + " origin/" + LINUX_GIT_BRANCH_2708, shell=True)
-	subprocess.check_call("make clean", shell=True)
+	subprocess.check_call("make mrproper", shell=True)
 	subprocess.check_call("cp " + DATA_DIR + "/config-2708 .config", shell=True)
 	# XXX: change localversion, document changes to raspbian original
 	subprocess.check_call("make olddefconfig", shell=True)
@@ -379,7 +379,7 @@ def buildLinux():
 	subprocess.check_call("git remote set-url origin " + LINUX_GIT_REPO_2709, shell=True)
 	subprocess.call("git fetch", shell=True)
 	subprocess.check_call("git checkout -f -B " + LINUX_GIT_BRANCH_2709 + " origin/" + LINUX_GIT_BRANCH_2709, shell=True)
-	subprocess.check_call("make clean", shell=True)
+	subprocess.check_call("make mrproper", shell=True)
 	subprocess.check_call("cp " + DATA_DIR + "/config-2709 .config", shell=True)
 	subprocess.check_call("make olddefconfig", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
@@ -391,7 +391,7 @@ def buildLinux():
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel7.img", shell=True)
 	subprocess.check_call("cp .config /boot/kernel7.img-config", shell=True)
 	if CLEANUP:
-		subprocess.check_call("make clean", shell=True)
+		subprocess.check_call("make mrproper", shell=True)
 	issue['linux-2709'] = getGitInfo()
 
 def buildIssueJson():
