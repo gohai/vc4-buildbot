@@ -343,6 +343,7 @@ def buildInputEvdev():
 
 def buildLinux():
 	# install dependencies
+	# (menuconfig additionally needs ncurses-dev)
 	subprocess.check_call("apt-get -y install bc", shell=True)
 	if not os.path.exists("/usr/local/src/raspberrypi-tools"):
 		subprocess.check_call("git clone https://github.com/raspberrypi/tools /usr/local/src/raspberrypi-tools", shell=True)
