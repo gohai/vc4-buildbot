@@ -101,7 +101,7 @@ subprocess.call("mv /boot/kernel.img.orig /boot/kernel.img", shell=True)
 subprocess.call("mv /boot/bcm2708-rpi-b.dtb.orig /boot/bcm2708-rpi-b.dtb", shell=True)
 subprocess.call("mv /boot/bcm2708-rpi-b-plus.dtb.orig /boot/bcm2708-rpi-b-plus.dtb", shell=True)
 subprocess.call("mv /boot/kernel7.img.orig /boot/kernel7.img", shell=True)
-subprocess.call("cp /boot/bcm2709-rpi-2-b.dtb.orig /boot/bcm2709-rpi-2-b.dtb", shell=True)
+subprocess.call("mv /boot/bcm2709-rpi-2-b.dtb.orig /boot/bcm2709-rpi-2-b.dtb", shell=True)
 if not ret:
 	BuildRaspbianImage(tar)
 ret = UploadTempFiles()
