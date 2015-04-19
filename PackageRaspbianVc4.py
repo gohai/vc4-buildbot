@@ -81,6 +81,7 @@ def BuildRaspbianImage(overlay):
 
 # XXX: pull latest vc4-buildbot script
 # XXX: umask?
+# XXX: prepopulate ssh host keys in known_hosts
 checkRoot()
 killHangingBuilds()
 UploadTempFiles()
