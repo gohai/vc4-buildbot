@@ -6,7 +6,7 @@ import re
 import json
 
 LINUX_GIT_REPO_2708 = "https://github.com/gohai/linux-vc4.git"
-LINUX_GIT_BRANCH_2708 = "vc4-kms-v3d"
+LINUX_GIT_BRANCH_2708 = "vc4-kms-v3d-fakeconnector"
 LINUX_GIT_REPO_2709 = "https://github.com/anholt/linux.git"
 LINUX_GIT_BRANCH_2709 = "vc4-3.19"
 MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
