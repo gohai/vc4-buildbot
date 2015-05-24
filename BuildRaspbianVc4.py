@@ -11,6 +11,8 @@ LINUX_GIT_REPO_2709 = "https://github.com/anholt/linux.git"
 LINUX_GIT_BRANCH_2709 = "vc4-kms-v3d-firmware-downstream"
 MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
 MESA_GIT_BRANCH = "master"
+PROCESSING_GIT_REPO = "https://github.com/gohai/processing.git"
+PROCESSING_GIT_BRANCH = "arm-3.0"
 DATA_DIR = os.path.dirname(os.path.realpath(__file__))
 MAKE_OPTS = "-j3"
 CLEANUP = 1
@@ -394,6 +396,20 @@ def buildLinux():
 		subprocess.check_call("make mrproper", shell=True)
 	issue['linux-2709'] = getGitInfo()
 
+def buildExtraProcessing():
+	subprocess.check_call("apt-get -y install ant", shell=True)
+	if not os.path.exists("/usr/local/src/processing"):
+		subprocess.check_call("git clone " + PROCESSING_GIT_REPO + " /usr/local/src/processing", shell=True)
+	os.chdir("/usr/local/src/processing")
+	subprocess.check_call("git remote set-url origin " + PROCESSING_GIT_REPO, shell=True)
+	subprocess.call("git fetch", shell=True)
+	subprocess.check_call("git checkout -f -B " + PROCESSING_GIT_BRANCH + " origin/" + PROCESSING_GIT_BRANCH, shell=True)
+	os.chdir("/usr/local/src/processing/build")
+	subprocess.check_call("ant linux-dist", shell=True)
+	if CLEANUP:
+		subprocess.check_call("ant clean", shell=True)
+	issue['processing'] = getGitInfo()
+
 def buildIssueJson():
 	os.chdir(os.path.dirname(os.path.realpath(__file__)))
 	issue['vc4-buildbot'] = getGitInfo()
@@ -431,4 +447,11 @@ buildInputEvdev()
 # build kernel last to minimize window where we would boot an
 # untested kernel on power outage etc
 buildLinux()
+
+# build optional extras
+try:
+	buildExtraProcessing()
+except:
+	print "Caught exception in extra"
+
 buildIssueJson()
