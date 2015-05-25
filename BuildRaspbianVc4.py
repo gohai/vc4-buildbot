@@ -399,6 +399,11 @@ def buildLinux():
 
 def buildExtraProcessing():
 	subprocess.check_call("apt-get -y install ant", shell=True)
+	# Processing expects this directory to exist as as well
+	if not os.path.exists("/usr/local/src/processing-docs"):
+		subprocess.check_call("git clone https://github.com/processing/processing-docs.git /usr/local/src/processing-docs", shell=True)
+	os.chdir("/usr/local/src/processing-docs")
+	subprocess.call("git pull", shell=True)
 	if not os.path.exists("/usr/local/src/processing"):
 		subprocess.check_call("git clone " + PROCESSING_GIT_REPO + " /usr/local/src/processing", shell=True)
 	os.chdir("/usr/local/src/processing")
