@@ -50,6 +50,11 @@ def TarRaspbianVc4():
 	subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-overlay.tar", shell=True)
 	return "/tmp/" + PREFIX + "-overlay.tar.bz2"
 
+def TarProcessing():
+	subprocess.call("tar cfp /tmp/" + PREFIX + "-processing.tar /usr/local/lib/processing*", shell=True)
+	subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-processing.tar", shell=True)
+	return "/tmp/" + PREFIX + "-processing.tar.bz2"
+
 def BuildRaspbianImage(overlay):
 	subprocess.check_call("apt-get -y install zip", shell=True)
 	os.chdir("/tmp")
@@ -98,6 +103,7 @@ ret = BuildRaspbianVc4()
 if not ret:
 	# success
 	tar = TarRaspbianVc4()
+	TarProcessing()
 # restore original kernel
 subprocess.call("mv /boot/kernel.img.orig /boot/kernel.img", shell=True)
 subprocess.call("mv /boot/bcm2708-rpi-b.dtb.orig /boot/bcm2708-rpi-b.dtb", shell=True)
