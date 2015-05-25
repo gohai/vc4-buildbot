@@ -13,6 +13,7 @@ MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
 MESA_GIT_BRANCH = "master"
 PROCESSING_GIT_REPO = "https://github.com/gohai/processing.git"
 PROCESSING_GIT_BRANCH = "arm-3.0"
+PROCESSING_VERSION = "3.0a9"
 DATA_DIR = os.path.dirname(os.path.realpath(__file__))
 MAKE_OPTS = "-j3"
 CLEANUP = 1
@@ -405,9 +406,21 @@ def buildExtraProcessing():
 	subprocess.call("git fetch", shell=True)
 	subprocess.check_call("git checkout -f -B " + PROCESSING_GIT_BRANCH + " origin/" + PROCESSING_GIT_BRANCH, shell=True)
 	os.chdir("/usr/local/src/processing/build")
-	subprocess.check_call("ant linux-dist", shell=True)
+	# we could build Processing with a more recent Java version
+	subprocess.check_call("ant linux-build", shell=True)
+	subprocess.check_call("rm -rf /usr/local/lib/processing" + PROCESSING_VERSION, shell=True)
+	subprocess.check_call("mv linux/work /usr/local/lib/processing" + PROCESSING_VERSION, shell=True)
+	subprocess.check_call("chown root:root -R /usr/local/lib/processing" + PROCESSING_VERSION, shell=True)
+	subprocess.check_call("ln -sf /usr/local/lib/processing" + PROCESSING_VERSION + "/processing /usr/local/bin/processing", shell=True)
+	subprocess.check_call("cp -f linux/processing.desktop /usr/local/share/applications", shell=True)
+	# update .desktop file
+	desktop = file_get_contents("/usr/local/share/applications/processing.desktop")
+	desktop = re.sub('@version@', PROCESSING_VERSION, desktop)
+	desktop = re.sub('/opt/processing', '/usr/local/lib/processing' + PROCESSING_VERSION, desktop)
+	file_put_contents("/usr/local/share/applications/processing.desktop", desktop)
 	if CLEANUP:
 		subprocess.check_call("ant clean", shell=True)
+	# this is currently not working for some reason
 	issue['processing'] = getGitInfo()
 
 def buildIssueJson():
