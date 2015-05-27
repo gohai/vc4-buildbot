@@ -51,7 +51,8 @@ def TarRaspbianVc4():
 	return "/tmp/" + PREFIX + "-overlay.tar.bz2"
 
 def TarProcessing():
-	subprocess.call("tar cfp /tmp/" + PREFIX + "-processing.tar /usr/local/lib/processing*", shell=True)
+	os.chdir("/usr/local/lib")
+	subprocess.call("tar cfp /tmp/" + PREFIX + "-processing.tar processing*", shell=True)
 	subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-processing.tar", shell=True)
 	return "/tmp/" + PREFIX + "-processing.tar.bz2"
 
