@@ -119,6 +119,7 @@ def buildGlProto():
 	issue['glproto'] = getGitInfo()
 
 def buildLibDrm():
+	subprocess.check_call("apt-get -y install libudev-dev", shell=True)
 	if not os.path.exists("/usr/local/src/libdrm"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/mesa/drm /usr/local/src/libdrm", shell=True)
 	os.chdir("/usr/local/src/libdrm")
