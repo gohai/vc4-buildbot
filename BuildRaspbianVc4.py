@@ -419,6 +419,7 @@ def buildExtraProcessing():
 	subprocess.check_call("mv linux/work /usr/local/lib/processing" + PROCESSING_VERSION, shell=True)
 	subprocess.check_call("chown root:root -R /usr/local/lib/processing" + PROCESSING_VERSION, shell=True)
 	subprocess.check_call("ln -sf /usr/local/lib/processing" + PROCESSING_VERSION + "/processing /usr/local/bin/processing", shell=True)
+	subprocess.check_call("mkdir -p /usr/local/share/applications", shell=true)
 	subprocess.check_call("cp -f linux/processing.desktop /usr/local/share/applications", shell=True)
 	# update .desktop file
 	desktop = file_get_contents("/usr/local/share/applications/processing.desktop")
