@@ -95,11 +95,17 @@ killHangingBuilds()
 UploadTempFiles()
 DeleteTempFiles()
 # preserve original kernel and device tree on build machine
-subprocess.call("cp /boot/kernel.img /boot/kernel.img.orig", shell=True)
-subprocess.call("cp /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b.dtb.orig", shell=True)
-subprocess.call("cp /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb.orig", shell=True)
-subprocess.call("cp /boot/kernel7.img /boot/kernel7.img.orig", shell=True)
-subprocess.call("cp /boot/bcm2709-rpi-2-b.dtb /boot/bcm2709-rpi-2-b.dtb.orig", shell=True)
+
+if not os.path.exists("/boot/kernel.img.orig"):
+	subprocess.call("cp /boot/kernel.img /boot/kernel.img.orig", shell=True)
+if not os.path.exists("/boot/bcm2708-rpi-b.dtb.orig"):
+	subprocess.call("cp /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b.dtb.orig", shell=True)
+if not os.path.exists("/boot/bcm2708-rpi-b-plus.dtb.orig"):
+	subprocess.call("cp /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb.orig", shell=True)
+if not os.path.exists("/boot/kernel7.img.orig"):
+	subprocess.call("cp /boot/kernel7.img /boot/kernel7.img.orig", shell=True)
+if not os.path.exists("/boot/bcm2709-rpi-2-b.dtb.orig"):
+	subprocess.call("cp /boot/bcm2709-rpi-2-b.dtb /boot/bcm2709-rpi-2-b.dtb.orig", shell=True)
 ret = BuildRaspbianVc4()
 if not ret:
 	# success
