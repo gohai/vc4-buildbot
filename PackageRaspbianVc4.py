@@ -82,7 +82,7 @@ def BuildRaspbianImage(overlay):
 	# this should yield one .img file inside /tmp/raspbian-vc4
 	files = os.listdir("/tmp/raspbian-vc4")
 	for fn in files:
-		if fn.endswidth(".img"):
+		if fn.endswith(".img"):
 			# make room for files we're adding to the image
 			ResizeRaspbianImage("/tmp/raspbian-vc4/" + fn, RASPBIAN_IMG_ENLARGE_BY_MB)
 			break
