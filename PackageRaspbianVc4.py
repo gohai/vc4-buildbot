@@ -20,6 +20,7 @@ UPLOAD_HOST = "sukzessiv.net"
 UPLOAD_USER = "vc4-buildbot"
 UPLOAD_KEY = os.path.dirname(os.path.realpath(__file__)) + "/sukzessiv-net.pem"
 UPLOAD_PATH = "~/upload/"
+RASPBIAN_IMG_ENLARGE_BY_MB = 200
 # this can be determined from fdisk *.img
 RASPBIAN_IMG_BYTES_PER_SECTOR = 512
 RASPBIAN_IMG_START_SECTOR_VFAT = 8192
@@ -65,6 +66,10 @@ def TarProcessing():
 	subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-processing.tar", shell=True)
 	return "/tmp/" + PREFIX + "-processing.tar.bz2"
 
+def ResizeRaspbianImage(fn, mbToAdd):
+	subprocess.check_call("dd if=/dev/zero bs=1M count=" + str(mbToAdd) + " >>" + fn, shell=True)
+	subprocess.check_call("fdisk " + fn + " <<EOF\nd\n2\nn\np\n2\n" + str(RASPBIAN_IMG_START_SECTOR_EXT4) + "\n\nw\nEOF", shell=True)
+
 def BuildRaspbianImage(overlay):
 	subprocess.check_call("apt-get -y install zip", shell=True)
 	os.chdir("/tmp")
@@ -75,6 +80,12 @@ def BuildRaspbianImage(overlay):
 	os.chdir("/tmp/raspbian-vc4")
 	subprocess.check_call("unzip ../raspbian_latest", shell=True)
 	# this should yield one .img file inside /tmp/raspbian-vc4
+	files = os.listdir("/tmp/raspbian-vc4")
+	for fn in files:
+		if fn.endswidth(".img"):
+			# make room for files we're adding to the image
+			ResizeRaspbianImage("/tmp/raspbian-vc4/" + fn, RASPBIAN_IMG_ENLARGE_BY_MB)
+			break
 	subprocess.check_call("mkdir /tmp/raspbian-vc4/live", shell=True)
 	subprocess.check_call("mount -o offset=" + str(RASPBIAN_IMG_START_SECTOR_EXT4 * RASPBIAN_IMG_BYTES_PER_SECTOR) + " -t ext4 *.img live", shell=True)
 	subprocess.check_call("mount -o offset=" + str(RASPBIAN_IMG_START_SECTOR_VFAT * RASPBIAN_IMG_BYTES_PER_SECTOR) + " -t vfat *.img live/boot", shell=True)
