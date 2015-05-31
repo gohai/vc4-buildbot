@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 
+# Script to package and distribute Raspberry Pi disk images
+# Copyright (C) 2015 Gottfried Haider
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+
+
 import os
 import subprocess
 import time

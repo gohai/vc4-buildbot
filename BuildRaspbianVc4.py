@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 
+# Script to build upstream Kernel, Mesa, XServer and friends on Raspberry Pi
+# Copyright (C) 2015 Gottfried Haider
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+
+
 import os
 import subprocess
 import re
