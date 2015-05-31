@@ -368,7 +368,8 @@ def buildLinux():
 	subprocess.check_call("make olddefconfig", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
-	# XXX: remove old module versions
+	# remove old kernel versions
+	subprocess.check_call("rm -rf /lib/modules/*-2708*", shell=True)
 	subprocess.check_call("make modules_install", shell=True)
 	subprocess.check_call("make bcm2708-rpi-b.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b.dtb", shell=True)
@@ -388,6 +389,7 @@ def buildLinux():
 	subprocess.check_call("make olddefconfig", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
+	subprocess.check_call("rm -rf /lib/modules/*-2709*", shell=True)
 	subprocess.check_call("make modules_install", shell=True)
 	subprocess.check_call("make bcm2709-rpi-2-b.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/bcm2709-rpi-2-b.dtb /boot/bcm2709-rpi-2-b.dtb", shell=True)
