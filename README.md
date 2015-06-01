@@ -2,7 +2,7 @@
 
 This script is designed to build the latest Kernel, Mesa and XServer packages, along with their dependencies from Git. After compilation the generated files are injected into a current Raspbian image, to be tested on a Raspberry Pi or Raspberry Pi 2.
 
-## Modifying a local Raspbian image
+## Modifying a local Raspbian installation
 
 1. Download the latest [Raspbian](http://downloads.raspberrypi.org/raspbian_latest) and put it onto a SD or microSD card, depending on which version of the Raspberry Pi you want this to run on
 2. In the initial setup screen (`raspi-config`) make sure to enlarge the filesystem, set the correct keyboard layout (the default is a British one), and enable the SSH server
