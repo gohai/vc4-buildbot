@@ -33,3 +33,9 @@ Moreover, the kernel configuration used is available as `/boot/kernel.img-config
 
 * Run `startx -- /usr/local/bin/Xorg`
 * For troubleshooting, take a look at `dmesg` and `/usr/local/var/log/Xorg.0.log`.
+
+## Debugging crashes
+
+To see why the X server unexpectedly crashes, run `startx` as root (`sudo startx -- /usr/local/bin/Xorg`). This will produce a file named `core` in the current directory after a crash.
+
+Fire up the debugger with `gdb /usr/local/bin/Xorg core`. The GDB command `where` shows the location of the crash, while `info frame` lists the captured variables, arguments and registers in the current frame.

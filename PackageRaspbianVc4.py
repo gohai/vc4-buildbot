@@ -56,7 +56,7 @@ def BuildRaspbianVc4():
 def TarRaspbianVc4():
 	# XXX: optionally include src
 	# XXX: better to temp. move original dir?
-	subprocess.call("tar cfp /tmp/" + PREFIX + "-overlay.tar /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2709-rpi-2-b.dtb /boot/config.txt /boot/issue-vc4.json /boot/kernel.img /boot/kernel.img-config /boot/kernel7.img /boot/kernel7.img-config /etc/ld.so.conf.d/01-libc.conf /lib/modules/*-2708* /lib/modules/*-2709* /usr/local --exclude=\"/usr/local/bin/indiecity\" --exclude=\"/usr/local/games\" --exclude=\"/usr/local/lib/python*\" --exclude=\"/usr/local/lib/site_ruby\" --exclude=\"/usr/local/src\" --exclude=\"/usr/local/sbin\" --exclude=\"/usr/local/share/ca-certificates\" --exclude=\"/usr/local/share/fonts\" --exclude=\"/usr/local/share/sgml\" --exclude=\"/usr/local/share/xml\" >/dev/null", shell=True)
+	subprocess.call("tar cfp /tmp/" + PREFIX + "-overlay.tar /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2709-rpi-2-b.dtb /boot/config.txt /boot/issue-vc4.json /boot/kernel.img /boot/kernel.img-config /boot/kernel7.img /boot/kernel7.img-config /etc/ld.so.conf.d/01-libc.conf /etc/security/limits.d/coredump.conf /lib/modules/*-2708* /lib/modules/*-2709* /usr/local --exclude=\"/usr/local/bin/indiecity\" --exclude=\"/usr/local/games\" --exclude=\"/usr/local/lib/python*\" --exclude=\"/usr/local/lib/site_ruby\" --exclude=\"/usr/local/src\" --exclude=\"/usr/local/sbin\" --exclude=\"/usr/local/share/ca-certificates\" --exclude=\"/usr/local/share/fonts\" --exclude=\"/usr/local/share/sgml\" --exclude=\"/usr/local/share/xml\" >/dev/null", shell=True)
 	subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-overlay.tar", shell=True)
 	return "/tmp/" + PREFIX + "-overlay.tar.bz2"
 

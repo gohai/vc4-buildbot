@@ -71,6 +71,9 @@ def updateLdConfig():
 		subprocess.check_call("mv /etc/ld.so.conf.d/libc.conf /etc/ld.so.conf.d/01-libc.conf", shell=True)
 	subprocess.check_call("ldconfig")
 
+def enableCoredumps():
+	file_put_contents("/etc/security/limits.d/coredump.conf", "*\tsoft\tcore\tunlimited")
+
 def getGitInfo():
 	info = {}
 	info['commit'] = subprocess.check_output("git rev-parse HEAD", shell=True).rstrip()
@@ -453,6 +456,7 @@ checkRoot()
 updateHostApt()
 updateConfigTxt()
 updateLdConfig()
+enableCoredumps()
 # mesa and friends
 buildXorgMacros()
 buildXcbProto()
