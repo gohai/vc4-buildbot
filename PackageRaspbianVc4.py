@@ -90,6 +90,8 @@ def BuildRaspbianImage(overlay):
 	subprocess.check_call("mount -o offset=" + str(RASPBIAN_IMG_START_SECTOR_EXT4 * RASPBIAN_IMG_BYTES_PER_SECTOR) + " -t ext4 *.img live", shell=True)
 	subprocess.check_call("mount -o offset=" + str(RASPBIAN_IMG_START_SECTOR_VFAT * RASPBIAN_IMG_BYTES_PER_SECTOR) + " -t vfat *.img live/boot", shell=True)
 	os.chdir("/tmp/raspbian-vc4/live")
+	# remove obsolete kernel modules
+	subprocess.check_call("rm -Rf /tmp/raspbian-vc4/live/lib/modules/*", shell=True)
 	subprocess.check_call("tar vfxp " + overlay, shell=True)
 	# rebuild ld.so.cache
 	subprocess.check_call("ldconfig -r /tmp/raspbian-vc4/live", shell=True)
