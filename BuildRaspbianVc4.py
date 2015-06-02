@@ -199,7 +199,7 @@ def buildMesa():
 	subprocess.call("git fetch", shell=True)
 	subprocess.check_call("git checkout -f -B " + MESA_GIT_BRANCH + " origin/" + MESA_GIT_BRANCH, shell=True)
 	# workaround https://bugs.freedesktop.org/show_bug.cgi?id=80848
-	subprocess.call("mkdir /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
+	subprocess.call("mkdir -p /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("mv /usr/lib/arm-linux-gnueabihf/libxcb* /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
 	# XXX: unsure if swrast is needed
