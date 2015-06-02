@@ -315,6 +315,11 @@ def buildXServer():
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/xserver /usr/local/src/xserver", shell=True)
 	os.chdir("/usr/local/src/xserver")
 	subprocess.call("git pull", shell=True)
+	# apply recent patch series from Eric Anholt fixing a segfault
+	subprocess.check_call("patch -Np1 < " + DATA_DIR + "/xserver1.diff", shell=True)
+	subprocess.check_call("patch -Np1 < " + DATA_DIR + "/xserver2.diff", shell=True)
+	subprocess.check_call("patch -Np1 < " + DATA_DIR + "/xserver3.diff", shell=True)
+	subprocess.check_call("patch -Np1 < " + DATA_DIR + "/xserver4.diff", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --enable-glamor --enable-dri2 --enable-dri3 --enable-present", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
