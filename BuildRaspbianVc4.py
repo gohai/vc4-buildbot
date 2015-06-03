@@ -325,6 +325,7 @@ def buildXServer():
 	if not os.path.exists("/usr/local/src/xserver"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/xserver /usr/local/src/xserver", shell=True)
 	os.chdir("/usr/local/src/xserver")
+	subprocess.check_call("git reset --hard", shell=True)
 	subprocess.call("git pull", shell=True)
 	# apply recent patch series from Eric Anholt fixing a segfault
 	subprocess.check_call("patch -Np1 < " + DATA_DIR + "/xserver1.diff", shell=True)
