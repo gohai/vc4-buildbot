@@ -21,7 +21,7 @@ UPLOAD_HOST = "sukzessiv.net"
 UPLOAD_USER = "vc4-buildbot"
 UPLOAD_KEY = os.path.dirname(os.path.realpath(__file__)) + "/sukzessiv-net.pem"
 UPLOAD_PATH = "~/upload/"
-RASPBIAN_IMG_ENLARGE_BY_MB = 512
+RASPBIAN_IMG_ENLARGE_BY_MB = 274
 # this can be determined from fdisk *.img
 RASPBIAN_IMG_BYTES_PER_SECTOR = 512
 RASPBIAN_IMG_START_SECTOR_VFAT = 8192
