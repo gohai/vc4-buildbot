@@ -31,7 +31,8 @@ Moreover, the kernel configuration used is available as `/boot/kernel.img-config
 
 ## Testing on a Raspberry Pi
 
-* Run `startx -- /usr/local/bin/Xorg`
+* Make sure to resize the root partition (first item in the menu that comes up upon first boot, or `raspi-config`)
+* Run `startx -- /usr/local/bin/Xorg` (booting the custom image one can also use plain `startx` as the compiled X Server is set as default)
 * For troubleshooting, take a look at `dmesg` and `/usr/local/var/log/Xorg.0.log`.
 
 ## Debugging crashes
