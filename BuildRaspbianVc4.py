@@ -24,7 +24,7 @@ PROCESSING_GIT_REPO = "https://github.com/gohai/processing.git"
 PROCESSING_GIT_BRANCH = "arm-3.0"
 PROCESSING_VERSION = "3.0a9"
 DATA_DIR = os.path.dirname(os.path.realpath(__file__))
-MAKE_OPTS = "-j3"
+MAKE_OPTS = "-j3 -l3"
 CLEANUP = 1
 
 issue = {}
