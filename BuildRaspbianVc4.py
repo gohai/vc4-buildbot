@@ -29,14 +29,7 @@ CLEANUP = 1
 
 issue = {}
 
-def checkRoot():
-	if os.geteuid() != 0:
-		exit("You need to have root privileges to run this script")
-
-def updateHostApt():
-	subprocess.check_call("apt-get -y update", shell=True)
-
-# helper functions used in updateConfigTxt
+# helper functions
 def file_get_contents(fn):
 		with open(fn) as f:
 			return f.read()
@@ -44,6 +37,13 @@ def file_get_contents(fn):
 def file_put_contents(fn, s):
 		with open(fn, 'w') as f:
 			f.write(s)
+
+def checkRoot():
+	if os.geteuid() != 0:
+		exit("You need to have root privileges to run this script")
+
+def updateHostApt():
+	subprocess.check_call("apt-get -y update", shell=True)
 
 def updateConfigTxt():
 	txt = file_get_contents("/boot/config.txt")
