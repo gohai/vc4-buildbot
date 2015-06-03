@@ -63,6 +63,16 @@ def updateConfigTxt():
 		if not added_comment:
 			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
 		txt = txt + "avoid_warnings=1\n"
+	# set disable_overscan=1 to workaround a bug in vc4 where the
+	# mouse cursor does not take the margins around the image into
+	# account
+	match = re.findall(r'^disable_overscan=(.*)$', txt, re.MULTILINE)
+	if 0 < len(match):
+		txt = re.sub(r'(^)disable_overscan=(.*)($)', r'\1disable_overscan=1\3', txt, 0, re.MULTILINE)
+	else:
+		if not added_comment:
+			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
+		txt = txt + "disable_overscan=1\n"
 	file_put_contents("/boot/config.txt", txt)
 
 def updateLdConfig():
