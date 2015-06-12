@@ -100,10 +100,14 @@ def BuildRaspbianImage(overlay):
 	subprocess.check_call("mount -o offset=" + str(RASPBIAN_IMG_START_SECTOR_EXT4 * RASPBIAN_IMG_BYTES_PER_SECTOR) + " -t ext4 *.img live", shell=True)
 	subprocess.check_call("mount -o offset=" + str(RASPBIAN_IMG_START_SECTOR_VFAT * RASPBIAN_IMG_BYTES_PER_SECTOR) + " -t vfat *.img live/boot", shell=True)
 	os.chdir("/tmp/raspbian-vc4/live")
-	# change the default X server
+	# change the default X server for startx
 	xserverrc = file_get_contents("/tmp/raspbian-vc4/live/etc/X11/xinit/xserverrc")
 	xserverrc = re.sub('/usr/bin/X', '/usr/local/bin/Xorg', xserverrc)
 	file_put_contents("/tmp/raspbian-vc4/live/etc/X11/xinit/xserverrc", xserverrc)
+	# change the default X server running after startup
+	lightdmconf = file_get_contents("/tmp/raspbian-vc4/live/etc/lightdm/lightdm.conf")
+	lightdmconf = re.sub("#xserver-command=X", "xserver-command=/usr/local/bin/Xorg", lightdmconf)
+	file_put_contents("/tmp/raspbian-vc4/live/etc/lightdm/lightdm.conf", lightdmconf)
 	# remove obsolete kernel modules
 	subprocess.check_call("rm -Rf /tmp/raspbian-vc4/live/lib/modules/*", shell=True)
 	subprocess.check_call("tar vfxp " + overlay, shell=True)
