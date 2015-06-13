@@ -502,9 +502,9 @@ buildInputEvdev()
 buildLinux()
 
 # build optional extras
-try:
+#try:
 	buildExtraProcessing()
-except:
-	print "Caught exception in extra"
+#except:
+#	print "Caught exception in extra"
 
 buildIssueJson()
