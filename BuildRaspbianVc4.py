@@ -503,7 +503,7 @@ buildLinux()
 
 # build optional extras
 #try:
-	buildExtraProcessing()
+buildExtraProcessing()
 #except:
 #	print "Caught exception in extra"
 
