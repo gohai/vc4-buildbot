@@ -111,6 +111,8 @@ def BuildRaspbianImage(overlay):
 	# remove obsolete kernel modules
 	subprocess.check_call("rm -Rf /tmp/raspbian-vc4/live/lib/modules/*", shell=True)
 	subprocess.check_call("tar vfxp " + overlay, shell=True)
+	# move the binary graphics driver to disable jogl's auto-detection
+	subprocess.check_call("mv /tmp/raspbian-vc4/live/opt/vc /tmp/raspbian-vc4/live/opt/vc.bak", shell=True)
 	# rebuild ld.so.cache
 	subprocess.check_call("ldconfig -r /tmp/raspbian-vc4/live", shell=True)
 	# enable sshd by default
