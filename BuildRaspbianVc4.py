@@ -474,6 +474,8 @@ updateHostApt()
 updateConfigTxt()
 updateLdConfig()
 enableCoredumps()
+# build Processing first since chances are that I screwed up somewhere
+buildExtraProcessing()
 # mesa and friends
 buildXorgMacros()
 buildXcbProto()
@@ -500,11 +502,5 @@ buildInputEvdev()
 # build kernel last to minimize window where we would boot an
 # untested kernel on power outage etc
 buildLinux()
-
-# build optional extras
-#try:
-buildExtraProcessing()
-#except:
-#	print "Caught exception in extra"
 
 buildIssueJson()
