@@ -1978,8 +1978,8 @@ CONFIG_I2C_ALGOBIT=y
 #
 # I2C Hardware Bus support
 #
-CONFIG_I2C_BCM2708=y
-CONFIG_I2C_BCM2708_BAUDRATE=100000
+# CONFIG_I2C_BCM2708 is not set
+# CONFIG_I2C_BCM2708_BAUDRATE is not set
 
 #
 # I2C system bus drivers (mostly embedded / system-on-chip)
