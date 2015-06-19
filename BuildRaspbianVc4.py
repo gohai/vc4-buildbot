@@ -15,7 +15,7 @@ import re
 import json
 
 LINUX_GIT_REPO_2708 = "https://github.com/gohai/linux-vc4.git"
-LINUX_GIT_BRANCH_2708 = "vc4-kms-v3d-rpi2-fxies"
+LINUX_GIT_BRANCH_2708 = "vc4-kms-v3d-rpi2-fixes"
 LINUX_GIT_REPO_2709 = "https://github.com/gohai/linux-vc4.git"
 LINUX_GIT_BRANCH_2709 = "vc4-kms-v3d-rpi2-fixes"
 MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
