@@ -3010,7 +3010,7 @@ CONFIG_FB_BACKLIGHT=y
 #
 # Frame buffer hardware drivers
 #
-CONFIG_FB_BCM2708=y
+# CONFIG_FB_BCM2708 is not set
 # CONFIG_FB_ARMCLCD is not set
 # CONFIG_FB_UVESA is not set
 # CONFIG_FB_OPENCORES is not set
