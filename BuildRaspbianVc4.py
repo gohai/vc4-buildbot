@@ -23,6 +23,8 @@ MESA_GIT_BRANCH = "master"
 PROCESSING_GIT_REPO = "https://github.com/gohai/processing.git"
 PROCESSING_GIT_BRANCH = "arm-3.0"
 PROCESSING_VERSION = "3.0a10"
+XSERVER_GIT_REPO = "git://people.freedesktop.org/~anholt/xserver"
+XSERVER_GIT_BRANCH = "glamor-quads"
 DATA_DIR = os.path.dirname(os.path.realpath(__file__))
 MAKE_OPTS = "-j3 -l3"
 CLEANUP = 1
@@ -328,15 +330,11 @@ def buildXServer():
 	subprocess.check_call("apt-get -y install libpixman-1-dev libssl-dev x11proto-xcmisc-dev x11proto-bigreqs-dev x11proto-render-dev x11proto-video-dev x11proto-composite-dev x11proto-record-dev x11proto-scrnsaver-dev x11proto-resource-dev x11proto-xf86dri-dev x11proto-xinerama-dev libxkbfile-dev libxfont-dev libpciaccess-dev libxcb-keysyms1-dev", shell=True)
 	# without libxcb-keysyms1-dev compiling fails with "Keyboard.c:21:29: fatal error: xcb/xcb_keysyms.h: No such file or directory compilation terminated.
 	if not os.path.exists("/usr/local/src/xserver"):
-		subprocess.check_call("git clone git://anongit.freedesktop.org/xorg/xserver /usr/local/src/xserver", shell=True)
+		subprocess.check_call("git clone " + XSERVER_GIT_REPO + " /usr/local/src/xserver", shell=True)
 	os.chdir("/usr/local/src/xserver")
-	subprocess.check_call("git reset --hard", shell=True)
-	subprocess.call("git pull", shell=True)
-	# apply recent patch series from Eric Anholt fixing a segfault
-	subprocess.check_call("patch -Np1 < " + DATA_DIR + "/xserver1.diff", shell=True)
-	subprocess.check_call("patch -Np1 < " + DATA_DIR + "/xserver2.diff", shell=True)
-	subprocess.check_call("patch -Np1 < " + DATA_DIR + "/xserver3.diff", shell=True)
-	subprocess.check_call("patch -Np1 < " + DATA_DIR + "/xserver4.diff", shell=True)
+	subprocess.check_call("git remote set-url origin " + XSERVER_GIT_REPO, shell=True)
+	subprocess.call("git fetch", shell=True)
+	subprocess.check_call("git checkout -f -B " + XSERVER_GIT_BRANCH + " origin/" + XSERVER_GIT_BRANCH, shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --enable-glamor --enable-dri2 --enable-dri3 --enable-present", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
