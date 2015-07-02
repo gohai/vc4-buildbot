@@ -60,11 +60,11 @@ def updateConfigTxt():
 	# set avoid_warnings=1 to remove warning overlay
 	match = re.findall(r'^avoid_warnings=(.*)$', txt, re.MULTILINE)
 	if 0 < len(match):
-		txt = re.sub(r'(^)avoid_warnings=(.*)($)', r'\1avoid_warnings=1\3', txt, 0, re.MULTILINE)
+		txt = re.sub(r'(^)avoid_warnings=(.*)($)', r'\1avoid_warnings=2\3', txt, 0, re.MULTILINE)
 	else:
 		if not added_comment:
 			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
-		txt = txt + "avoid_warnings=1\n"
+		txt = txt + "avoid_warnings=2\n"
 	# set disable_overscan=1 to workaround a bug in vc4 where the
 	# mouse cursor does not take the margins around the image into
 	# account
