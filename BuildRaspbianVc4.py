@@ -86,6 +86,13 @@ def updateLdConfig():
 def enableCoredumps():
 	file_put_contents("/etc/security/limits.d/coredump.conf", "*\tsoft\tcore\tunlimited")
 
+def updateUdevGpioRule():
+	# this is needed for recent kernels
+	# proposed fix in https://github.com/raspberrypi/linux/issues/791 didn't work for me
+	udev = file_get_contents("/etc/udev/rules.d/99-com.rules")
+	udev = re.sub('/sys/devices/virtual/gpio\'', '/sys/devices/virtual/gpio; chown -RH root:gpio /sys/class/gpio/* && chmod -R 770 /sys/class/gpio/*\'', udev)
+	file_put_contents("/etc/udev/rules.d/99-com.rules", udev)
+
 def getGitInfo():
 	info = {}
 	info['commit'] = subprocess.check_output("git rev-parse HEAD", shell=True).rstrip()
@@ -477,6 +484,7 @@ updateHostApt()
 updateConfigTxt()
 updateLdConfig()
 enableCoredumps()
+updateUdevGpioRule()
 # build Processing first since chances are that I screwed up somewhere
 buildExtraProcessing()
 # mesa and friends
