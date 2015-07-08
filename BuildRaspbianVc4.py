@@ -237,6 +237,8 @@ def buildMesa():
 	subprocess.check_call("mv /usr/lib/arm-linux-gnueabihf/tmp-libxcb/* /usr/lib/arm-linux-gnueabihf", shell=True)
 	subprocess.check_call("rmdir /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
+	# copy GLES2 test program
+	subprocess.check_call("cp "+DATA_DIR+"/es2tri /usr/local/bin", shell=True)
 	issue['mesa'] = getGitInfo()
 
 def buildXTrans():
