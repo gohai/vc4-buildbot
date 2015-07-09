@@ -102,11 +102,11 @@ def BuildRaspbianImage(overlay):
 	os.chdir("/tmp/raspbian-vc4/live")
 	# change the default X server for startx
 	xserverrc = file_get_contents("/tmp/raspbian-vc4/live/etc/X11/xinit/xserverrc")
-	xserverrc = re.sub('/usr/bin/X', '/usr/local/bin/Xorg', xserverrc)
+	xserverrc = re.sub('/usr/bin/X', 'LIBGL_DEBUG=1 MESA_DEBUG=1 EGL_LOG_LEVEL=debug GLAMOR_DEBUG=1 /usr/local/bin/Xorg', xserverrc)
 	file_put_contents("/tmp/raspbian-vc4/live/etc/X11/xinit/xserverrc", xserverrc)
 	# change the default X server running after startup
 	lightdmconf = file_get_contents("/tmp/raspbian-vc4/live/etc/lightdm/lightdm.conf")
-	lightdmconf = re.sub("#xserver-command=X", "xserver-command=/usr/local/bin/Xorg", lightdmconf)
+	lightdmconf = re.sub("#xserver-command=X", "xserver-command=LIBGL_DEBUG=1 MESA_DEBUG=1 EGL_LOG_LEVEL=debug GLAMOR_DEBUG=1 /usr/local/bin/Xorg", lightdmconf)
 	file_put_contents("/tmp/raspbian-vc4/live/etc/lightdm/lightdm.conf", lightdmconf)
 	# remove obsolete kernel modules
 	subprocess.check_call("rm -Rf /tmp/raspbian-vc4/live/lib/modules/*", shell=True)
