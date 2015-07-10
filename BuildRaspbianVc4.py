@@ -88,6 +88,13 @@ def updateLdConfig():
 def enableCoredumps():
 	file_put_contents("/etc/security/limits.d/coredump.conf", "*\tsoft\tcore\tunlimited")
 
+def enableDebugEnvVars():
+	out = "export LIBGL_DEBUG=1\n"
+	out += "export MESA_DEBUG=1\n"
+	out += "export EGL_LOG_LEVEL=debug\n"
+	out += "export GLAMOR_DEBUG=1\n"
+	file_put_contents("/etc/profile.d/graphics-debug.sh", out)
+
 def updateUdevGpioRule():
 	# this is needed for recent kernels
 	# proposed fix in https://github.com/raspberrypi/linux/issues/791 didn't work for me
@@ -489,6 +496,7 @@ updateConfigTxt()
 updateLdConfig()
 enableCoredumps()
 updateUdevGpioRule()
+enableDebugEnvVars()
 # build Processing first since chances are that I screwed up somewhere
 buildExtraProcessing()
 # mesa and friends

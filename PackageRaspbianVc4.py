@@ -66,7 +66,7 @@ def BuildRaspbianVc4():
 def TarRaspbianVc4():
 	# XXX: optionally include src
 	# XXX: better to temp. move original dir?
-	subprocess.call("tar cfp /tmp/" + PREFIX + "-overlay.tar /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2709-rpi-2-b.dtb /boot/config.txt /boot/issue-vc4.json /boot/kernel.img /boot/kernel.img-config /boot/kernel7.img /boot/kernel7.img-config /etc/ld.so.conf.d/01-libc.conf /etc/security/limits.d/coredump.conf /lib/modules/*-2708* /lib/modules/*-2709* /usr/local --exclude=\"/usr/local/bin/indiecity\" --exclude=\"/usr/local/games\" --exclude=\"/usr/local/lib/python*\" --exclude=\"/usr/local/lib/site_ruby\" --exclude=\"/usr/local/src\" --exclude=\"/usr/local/sbin\" --exclude=\"/usr/local/share/ca-certificates\" --exclude=\"/usr/local/share/fonts\" --exclude=\"/usr/local/share/sgml\" --exclude=\"/usr/local/share/xml\" >/dev/null", shell=True)
+	subprocess.call("tar cfp /tmp/" + PREFIX + "-overlay.tar /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2709-rpi-2-b.dtb /boot/config.txt /boot/issue-vc4.json /boot/kernel.img /boot/kernel.img-config /boot/kernel7.img /boot/kernel7.img-config /etc/ld.so.conf.d/01-libc.conf /etc/profile.d/graphics-debug.sh /etc/security/limits.d/coredump.conf /lib/modules/*-2708* /lib/modules/*-2709* /usr/local --exclude=\"/usr/local/bin/indiecity\" --exclude=\"/usr/local/games\" --exclude=\"/usr/local/lib/python*\" --exclude=\"/usr/local/lib/site_ruby\" --exclude=\"/usr/local/src\" --exclude=\"/usr/local/sbin\" --exclude=\"/usr/local/share/ca-certificates\" --exclude=\"/usr/local/share/fonts\" --exclude=\"/usr/local/share/sgml\" --exclude=\"/usr/local/share/xml\" >/dev/null", shell=True)
 	subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-overlay.tar", shell=True)
 	return "/tmp/" + PREFIX + "-overlay.tar.bz2"
 
@@ -102,11 +102,11 @@ def BuildRaspbianImage(overlay):
 	os.chdir("/tmp/raspbian-vc4/live")
 	# change the default X server for startx
 	xserverrc = file_get_contents("/tmp/raspbian-vc4/live/etc/X11/xinit/xserverrc")
-	xserverrc = re.sub('/usr/bin/X', 'LIBGL_DEBUG=1 MESA_DEBUG=1 EGL_LOG_LEVEL=debug GLAMOR_DEBUG=1 /usr/local/bin/Xorg', xserverrc)
+	xserverrc = re.sub('/usr/bin/X', '/usr/local/bin/Xorg', xserverrc)
 	file_put_contents("/tmp/raspbian-vc4/live/etc/X11/xinit/xserverrc", xserverrc)
 	# change the default X server running after startup
 	lightdmconf = file_get_contents("/tmp/raspbian-vc4/live/etc/lightdm/lightdm.conf")
-	lightdmconf = re.sub("#xserver-command=X", "xserver-command=LIBGL_DEBUG=1 MESA_DEBUG=1 EGL_LOG_LEVEL=debug GLAMOR_DEBUG=1 /usr/local/bin/Xorg", lightdmconf)
+	lightdmconf = re.sub("#xserver-command=X", "xserver-command=/usr/local/bin/Xorg", lightdmconf)
 	file_put_contents("/tmp/raspbian-vc4/live/etc/lightdm/lightdm.conf", lightdmconf)
 	# remove obsolete kernel modules
 	subprocess.check_call("rm -Rf /tmp/raspbian-vc4/live/lib/modules/*", shell=True)
