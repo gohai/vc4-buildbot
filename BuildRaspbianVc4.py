@@ -64,6 +64,7 @@ def updateConfigTxt():
 	else:
 		if not added_comment:
 			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
+			added_comment = 1
 		txt = txt + "avoid_warnings=2\n"
 	# set disable_overscan=1 to workaround a bug in vc4 where the
 	# mouse cursor does not take the margins around the image into
@@ -74,6 +75,7 @@ def updateConfigTxt():
 	else:
 		if not added_comment:
 			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
+			added_comment = 1
 		txt = txt + "disable_overscan=1\n"
 	file_put_contents("/boot/config.txt", txt)
 
