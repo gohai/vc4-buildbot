@@ -246,8 +246,6 @@ def buildMesa():
 	subprocess.check_call("mv /usr/lib/arm-linux-gnueabihf/tmp-libxcb/* /usr/lib/arm-linux-gnueabihf", shell=True)
 	subprocess.check_call("rmdir /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
-	# copy GLES2 test program
-	subprocess.check_call("cp "+DATA_DIR+"/es2tri /usr/local/bin", shell=True)
 	issue['mesa'] = getGitInfo()
 
 def buildXTrans():
@@ -366,6 +364,24 @@ def buildXServer():
 	if CLEANUP:
 		subprocess.check_call("make clean", shell=True)
 	issue['xserver'] = getGitInfo()
+
+def buildMesaDemos():
+	# XXX: needs glew on target?
+	subprocess.check_call("apt-get -y install libglew-dev", shell=True)
+	if not os.path.exists("/usr/local/src/mesa-demos"):
+		subprocess.check_call("git clone git://anongit.freedesktop.org/mesa/demos /usr/local/src/mesa-demos", shell=True)
+	os.chdir("/usr/local/src/mesa-demos")
+	subprocess.call("git pull", shell=True)
+	# fix compile errors related to EGL_MESA_screen_surface removal
+	# see https://bugs.freedesktop.org/show_bug.cgi?id=91020
+	subprocess.check_call("patch -p1 < " + DATA_DIR + "/mesa-demos-91020.patch", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
+	subprocess.check_call("ldconfig", shell=True)
+	issue['mesa-demos'] = getGitInfo()
 
 def buildLibEvdev():
 	# >= 0.4 needed for xf86-input-evdev
@@ -519,6 +535,8 @@ buildRandrProto()
 buildFontsProto()
 buildLibEpoxy()
 buildXServer()
+# glxgears and friends
+buildMesaDemos()
 # xserver modules
 buildLibEvdev()
 buildInputEvdev()
