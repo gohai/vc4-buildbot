@@ -371,6 +371,8 @@ def buildMesaDemos():
 	if not os.path.exists("/usr/local/src/mesa-demos"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/mesa/demos /usr/local/src/mesa-demos", shell=True)
 	os.chdir("/usr/local/src/mesa-demos")
+	# to prevent re-applying the patch below
+	subprocess.call("git reset --hard", shell=True)
 	subprocess.call("git pull", shell=True)
 	# fix compile errors related to EGL_MESA_screen_surface removal
 	# see https://bugs.freedesktop.org/show_bug.cgi?id=91020
