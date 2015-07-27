@@ -366,7 +366,7 @@ def buildXServer():
 	issue['xserver'] = getGitInfo()
 
 def buildMesaDemos():
-	# XXX: needs glew on target?
+	# this needs libglew1.7 to run
 	subprocess.check_call("apt-get -y install libglew-dev", shell=True)
 	if not os.path.exists("/usr/local/src/mesa-demos"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/mesa/demos /usr/local/src/mesa-demos", shell=True)

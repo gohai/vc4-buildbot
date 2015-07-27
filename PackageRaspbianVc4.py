@@ -111,6 +111,8 @@ def BuildRaspbianImage(overlay):
 	# remove obsolete kernel modules
 	subprocess.check_call("rm -Rf /tmp/raspbian-vc4/live/lib/modules/*", shell=True)
 	subprocess.check_call("tar vfxp " + overlay, shell=True)
+	# install libglew1.7 needed for mesa-demos
+	subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install libglew1.7", shell=True)
 	# move the binary graphics driver to disable jogl's auto-detection
 	subprocess.check_call("mv /tmp/raspbian-vc4/live/opt/vc /tmp/raspbian-vc4/live/opt/vc.bak", shell=True)
 	# rebuild ld.so.cache
