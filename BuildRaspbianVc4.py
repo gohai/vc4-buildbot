@@ -512,6 +512,8 @@ def buildExtraProcessing():
 	desktop = re.sub('@version@', PROCESSING_VERSION, desktop)
 	desktop = re.sub('/opt/processing', '/usr/local/lib/processing', desktop)
 	file_put_contents("/usr/local/share/applications/processing.desktop", desktop)
+	# copy the test script
+	subprocess.check_call("cp -f " + DATA_DIR + "/processing-test3d.* /home/pi", shell=True)
 	if CLEANUP:
 		subprocess.check_call("ant clean", shell=True)
 	# this is currently not working for some reason

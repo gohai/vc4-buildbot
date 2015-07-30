@@ -1,0 +1,419 @@
+{
+    "tests": [
+        {
+            "ignore": 0,
+            "sketch": "Basics/Camera/MoveEye",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Camera/Orthographic",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Camera/Perspective",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Form/Primitives3D",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Lights/Directional",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Lights/Mixture",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Lights/MixtureGrid",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Lights/OnOff",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Lights/Reflection",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Lights/Spot",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Shape/LoadDisplayOBJ",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Transform/RotatePushPop",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Basics/Transform/RotateXY",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Graphics/DepthSort",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Graphics/LowLevelGL",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Graphics/Particles",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Graphics/Patch",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Graphics/Planets",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Graphics/Ribbons",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Graphics/RotatingArcs",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Graphics/Trefoil",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Graphics/Wiggling",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Graphics/Yellowtail",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 1,
+            "sketch": "Demos/Performance/CubicGridImmediate",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 1,
+            "sketch": "Demos/Performance/CubicGridRetained",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Performance/DynamicParticlesImmediate",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Performance/DynamicParticlesRetained",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Performance/Esfera",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Performance/LineRendering",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Performance/QuadRendering",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 1,
+            "sketch": "Demos/Performance/StaticParticlesImmediate",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 1,
+            "sketch": "Demos/Performance/StaticParticlesRetained",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Performance/TextRendering",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Tests/MenuBar",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Tests/MultipleWindows",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Tests/NoBackgroundTest",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Tests/OffscreenTest",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Tests/RedrawTest",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Tests/ResizeTest",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Tests/SpecsTest",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Create Shapes/BeginEndContour",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Create Shapes/GroupPShape",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Create Shapes/ParticleSystemPShape",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Create Shapes/PathPShape",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Create Shapes/PolygonPShape",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Create Shapes/PolygonPShapeOOP",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Create Shapes/PolygonPShapeOOP2",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Create Shapes/PolygonPShapeOOP3",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Create Shapes/PrimitivePShape",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Create Shapes/WigglePShape",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Curves/ArcLengthParametrization",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Geometry/Icosahedra",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Geometry/NoiseSphere",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Geometry/RGBCube",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Geometry/ShapeTransform",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Geometry/SpaceJunk",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Geometry/Toroid",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Geometry/Vertices",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Image Processing/Blending",
+            "renderer": "P2D+P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Image Processing/Explode",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Image Processing/Extrusion",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Image Processing/Zoom",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Motion/CubesWithinCube",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/BlurFilter",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/Conway",
+            "renderer": "P2D+P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/CustomBlend",
+            "renderer": "P2D+P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/Deform",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/DomeProjection",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/EdgeDetect",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/EdgeFilter",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/GlossyFishEye",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/ImageMask",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/Landscape",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/Monjori",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/Nebula",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/SepBlur",
+            "renderer": "P2D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Shaders/ToonShading",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Simulate/GravitationalAttraction3D",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Textures/TextureCube",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Textures/TextureCylinder",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Textures/TextureQuad",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Textures/TextureSphere",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Topics/Textures/TextureTriangle",
+            "renderer": "P3D"
+        }
+    ]
+}
