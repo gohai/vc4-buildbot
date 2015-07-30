@@ -502,14 +502,15 @@ def buildExtraProcessing():
 	subprocess.check_call("rm -rf /usr/local/lib/processing*", shell=True)
 	subprocess.check_call("mv linux/work /usr/local/lib/processing" + PROCESSING_VERSION, shell=True)
 	subprocess.check_call("chown root:root -R /usr/local/lib/processing" + PROCESSING_VERSION, shell=True)
-	subprocess.check_call("ln -sf /usr/local/lib/processing" + PROCESSING_VERSION + "/processing /usr/local/bin/processing", shell=True)
-	subprocess.check_call("ln -sf /usr/local/lib/processing" + PROCESSING_VERSION + "/processing-java /usr/local/bin/processing-java", shell=True)
+	subprocess.check_call("ln -sf /usr/local/lib/processing" + PROCESSING_VERSION + " /usr/local/lib/processing", shell=True)
+	subprocess.check_call("ln -sf /usr/local/lib/processing/processing /usr/local/bin/processing", shell=True)
+	subprocess.check_call("ln -sf /usr/local/lib/processing/processing-java /usr/local/bin/processing-java", shell=True)
 	subprocess.check_call("mkdir -p /usr/local/share/applications", shell=True)
 	subprocess.check_call("cp -f linux/processing.desktop /usr/local/share/applications", shell=True)
 	# update .desktop file
 	desktop = file_get_contents("/usr/local/share/applications/processing.desktop")
 	desktop = re.sub('@version@', PROCESSING_VERSION, desktop)
-	desktop = re.sub('/opt/processing', '/usr/local/lib/processing' + PROCESSING_VERSION, desktop)
+	desktop = re.sub('/opt/processing', '/usr/local/lib/processing', desktop)
 	file_put_contents("/usr/local/share/applications/processing.desktop", desktop)
 	if CLEANUP:
 		subprocess.check_call("ant clean", shell=True)
