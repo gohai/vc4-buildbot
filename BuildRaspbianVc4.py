@@ -520,6 +520,20 @@ def buildExtraProcessing():
 	# this is currently not working for some reason
 	issue['processing'] = getGitInfo()
 
+def buildExtraProcessingVideo():
+	if not os.path.exists("/usr/local/src/processing-video"):
+		subprocess.check_call("git clone https://github.com/processing/processing-video.git /usr/local/src/processing-video", shell=True)
+	os.chdir("/usr/local/src/processing-video")
+	subprocess.call("git fetch", shell=True)
+	subprocess.check_call("git checkout -f -B gohai-arm origin/gohai-arm", shell=True)
+	subprocess.check_call("printf \"core.classpath.location=/usr/local/lib/processing/core/library\\ncompiler.classpath.location=/usr/local/lib/processing/java/mode\" > build.properties", shell=True)
+	subprocess.check_call("ant build", shell=True)
+	subprocess.check_call("mkdir -p /usr/local/lib/processing/modes/java/libraries/video", shell=True)
+	subprocess.check_call("cp -fr examples library library.properties /usr/local/lib/processing/modes/java/libraries/video", shell=True)
+	if CLEANUP:
+		subprocess.check_call("ant clean", shell=True)
+	issue['processing-video'] = getGitInfo()
+
 def buildIssueJson():
 	os.chdir(os.path.dirname(os.path.realpath(__file__)))
 	issue['vc4-buildbot'] = getGitInfo()
@@ -536,6 +550,7 @@ updateUdevGpioRule()
 enableDebugEnvVars()
 # build Processing first since chances are that I screwed up somewhere
 buildExtraProcessing()
+buildExtraProcessingVideo()
 # mesa and friends
 buildXorgMacros()
 buildXcbProto()
