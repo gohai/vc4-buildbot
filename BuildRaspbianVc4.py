@@ -481,6 +481,39 @@ def buildLinux():
 		subprocess.check_call("make mrproper", shell=True)
 	issue['linux-2709'] = getGitInfo()
 
+def buildGstreamer():
+	# Raspbian seem to have a modified (?) gstreamer-1.0 that hooks into OpenMAX IL
+	# let's see how the latest version of gstreamer performs
+	# this should have support for vdpau and omx, not: vaapi
+	for pkg in ["gstreamer", "gst-plugins-base", "gst-plugins-good", "gst-plugins-bad", "gst-plugins-ugly", "gst-libav"]:
+		if not os.path.exists("/usr/local/src/" + pkg):
+			# 1.4 is the current stable branch
+			subprocess.check_call("git clone git clone --recursive --branch 1.4 git://anongit.freedesktop.org/gstreamer/" + pkg, shell=True)
+		os.chdir("/usr/local/src/" + pkg)
+		# XXX: what about subprojects
+		subprocess.call("git pull", shell=True)
+		# we're missing gtk-doc-tools, so skip building the docs
+		subprocess.check_call("./autogen.sh --prefix=/usr/local --disable-gtk-doc", shell=True)
+		subprocess.check_call("make " + MAKE_OPTS, shell=True)
+		subprocess.check_call("make install", shell=True)
+		if CLEANUP:
+			subprocess.check_call("make clean", shell=True)
+		subprocess.check_call("ldconfig", shell=True)
+	if not os.path.exists("/usr/local/src/gst-omx"):
+		subprocess.check_call("git clone git clone --recursive git://anongit.freedesktop.org/gstreamer/gst-omx", shell=True)
+	os.chdir("/usr/local/src/gst-omx")
+	# XXX: what about subprojects
+	subprocess.call("git pull", shell=True)
+	# work around a compilation error
+	# to build a VC IV specific backend: --with-omx-target=rpi
+	# XXX: OMX_VideoExt.h... no, OMX_VIDEO_CodingVP8 is declared... no, OMX_VIDEO_CodingTheora is declared... no
+	subprocess.check_call("CFLAGS=\"-DOMX_VERSION_MAJOR=1 -DOMX_VERSION_MINOR=1 -DOMX_VERSION_REVISION=2 -DOMX_VERSION_STEP=0\" ./autogen.sh --prefix=/usr/local --disable-gtk-doc --with-omx-target=generic", shell=True)
+	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	subprocess.check_call("make install", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make clean", shell=True)
+	subprocess.check_call("ldconfig", shell=True)
+
 def buildExtraProcessing():
 	subprocess.check_call("apt-get -y install ant", shell=True)
 	# Processing expects this directory to exist as as well
@@ -575,6 +608,7 @@ buildMesaDemos()
 # xserver modules
 buildLibEvdev()
 buildInputEvdev()
+buildGstreamer()
 # build kernel last to minimize window where we would boot an
 # untested kernel on power outage etc
 buildLinux()
