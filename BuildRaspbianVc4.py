@@ -232,7 +232,7 @@ def buildLibXShmFence():
 	issue['libxshmfence'] = getGitInfo()
 
 def buildMesa():
-	subprocess.check_call("apt-get -y install bison flex python-mako libx11-dev libx11-xcb-dev libxext-dev libxdamage-dev libxfixes-dev libudev-dev libexpat-dev gettext", shell=True)
+	subprocess.check_call("apt-get -y install bison flex python-mako libx11-dev libx11-xcb-dev libxext-dev libxdamage-dev libxfixes-dev libudev-dev libexpat-dev gettext libomxil-bellagio-dev", shell=True)
 	if not os.path.exists("/usr/local/src/mesa"):
 		subprocess.check_call("git clone " + MESA_GIT_REPO + " /usr/local/src/mesa", shell=True)
 	os.chdir("/usr/local/src/mesa")
@@ -245,10 +245,9 @@ def buildMesa():
 		subprocess.check_call("mv /usr/lib/arm-linux-gnueabihf/libxcb* /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
 	# XXX: unsure if swrast is needed
-	# XXX: this complains about libva missing at some point, but continues
-	# XXX: Shader cache: no
+	# XXX: check output (shader cache etc)
 	# --enable-glx-tls matches Raspbian's config
-	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --with-gallium-drivers=vc4 --enable-gles1 --enable-gles2 --with-egl-platforms=x11,drm --with-dri-drivers=swrast --enable-dri3 --enable-glx-tls", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --with-gallium-drivers=vc4 --enable-gles1 --enable-gles2 --with-egl-platforms=x11,drm --with-dri-drivers=swrast --enable-dri3 --enable-glx-tls --enable-omx", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
