@@ -488,7 +488,7 @@ def buildGstreamer():
 	for pkg in ["gstreamer", "gst-plugins-base", "gst-plugins-good", "gst-plugins-bad", "gst-plugins-ugly", "gst-libav"]:
 		if not os.path.exists("/usr/local/src/" + pkg):
 			# 1.4 is the current stable branch
-			subprocess.check_call("git clone git clone --recursive --branch 1.4 git://anongit.freedesktop.org/gstreamer/" + pkg, shell=True)
+			subprocess.check_call("git clone --recursive --branch 1.4 git://anongit.freedesktop.org/gstreamer/" + pkg, shell=True)
 		os.chdir("/usr/local/src/" + pkg)
 		# XXX: what about subprojects
 		subprocess.call("git pull", shell=True)
@@ -500,7 +500,7 @@ def buildGstreamer():
 			subprocess.check_call("make clean", shell=True)
 		subprocess.check_call("ldconfig", shell=True)
 	if not os.path.exists("/usr/local/src/gst-omx"):
-		subprocess.check_call("git clone git clone --recursive git://anongit.freedesktop.org/gstreamer/gst-omx", shell=True)
+		subprocess.check_call("git clone --recursive git://anongit.freedesktop.org/gstreamer/gst-omx", shell=True)
 	os.chdir("/usr/local/src/gst-omx")
 	# XXX: what about subprojects
 	subprocess.call("git pull", shell=True)
