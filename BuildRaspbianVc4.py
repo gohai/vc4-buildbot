@@ -130,6 +130,7 @@ def buildXorgMacros():
 	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
 	# move .pc file to standard path
+	subprocess.check_call("mkdir -p /usr/local/lib/pkgconfig", shell=True)
 	subprocess.check_call("mv /usr/local/share/pkgconfig/xorg-macros.pc /usr/local/lib/pkgconfig", shell=True)
 	issue['xorg-macros'] = getGitInfo()
 
