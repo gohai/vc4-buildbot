@@ -534,9 +534,9 @@ def buildExtraProcessing():
 	subprocess.check_call("ant linux-build", shell=True)
 	# this also removes previous versions
 	subprocess.check_call("rm -rf /usr/local/lib/processing*", shell=True)
-	subprocess.check_call("mv linux/work /usr/local/lib/processing" + PROCESSING_VERSION, shell=True)
-	subprocess.check_call("chown root:root -R /usr/local/lib/processing" + PROCESSING_VERSION, shell=True)
-	subprocess.check_call("ln -sf processing" + PROCESSING_VERSION + " /usr/local/lib/processing", shell=True)
+	subprocess.check_call("mv linux/work /usr/local/lib/processing-" + PROCESSING_VERSION, shell=True)
+	subprocess.check_call("chown root:root -R /usr/local/lib/processing-" + PROCESSING_VERSION, shell=True)
+	subprocess.check_call("ln -sf processing-" + PROCESSING_VERSION + " /usr/local/lib/processing", shell=True)
 	subprocess.check_call("ln -sf /usr/local/lib/processing/processing /usr/local/bin/processing", shell=True)
 	subprocess.check_call("ln -sf /usr/local/lib/processing/processing-java /usr/local/bin/processing-java", shell=True)
 	subprocess.check_call("mkdir -p /usr/local/share/applications", shell=True)

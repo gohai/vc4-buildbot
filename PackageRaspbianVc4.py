@@ -72,7 +72,7 @@ def TarRaspbianVc4():
 
 def TarProcessing():
 	os.chdir("/usr/local/lib")
-	subprocess.call("tar cfp /tmp/" + PREFIX + "-processing.tar processing3.0*", shell=True)
+	subprocess.call("tar cfp /tmp/" + PREFIX + "-processing.tar processing-3.*", shell=True)
 	subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-processing.tar", shell=True)
 	return "/tmp/" + PREFIX + "-processing.tar.bz2"
 
