@@ -546,15 +546,15 @@ def buildExtraProcessing():
 	desktop = re.sub('@version@', PROCESSING_VERSION, desktop)
 	desktop = re.sub('/opt/processing', '/usr/local/lib/processing', desktop)
 	file_put_contents("/usr/local/share/applications/processing.desktop", desktop)
-	# inject nightly OpenJFX build
+	# inject nightly OpenJFX build (FX2D not working on Raspbian as of 3.0a9, stock or mesa)
 	# this also copies a gstreamer-lite.so btw
-	subprocess.check_call("wget -q http://108.61.191.178/openjfx-8-sdk-overlay-linux-armv6hf.zip", shell=True)
-	subprocess.check_call("mkdir openjfx", shell=True)
-	os.chdir("/usr/local/src/processing/build/openjfx")
-	subprocess.check_call("unzip ../openjfx-8-sdk-overlay-linux-armv6hf.zip", shell=True)
-	subprocess.check_call("cp -rf jre/* /usr/local/lib/processing/java", shell=True)
-	os.chdir("/usr/local/src/processing/build")
-	subprocess.check_call("rm -rf openjfx*", shell=True)
+	#subprocess.check_call("wget -q http://108.61.191.178/openjfx-8-sdk-overlay-linux-armv6hf.zip", shell=True)
+	#subprocess.check_call("mkdir openjfx", shell=True)
+	#os.chdir("/usr/local/src/processing/build/openjfx")
+	#subprocess.check_call("unzip ../openjfx-8-sdk-overlay-linux-armv6hf.zip", shell=True)
+	#subprocess.check_call("cp -rf jre/* /usr/local/lib/processing/java", shell=True)
+	#os.chdir("/usr/local/src/processing/build")
+	#subprocess.check_call("rm -rf openjfx*", shell=True)
 	# copy the simplevideo library
 	subprocess.check_call("wget -q http://github.com/gohai/processing-simplevideo/archive/master.zip", shell=True)
 	subprocess.check_call("unzip master.zip", shell=True)
