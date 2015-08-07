@@ -21,7 +21,7 @@ UPLOAD_HOST = "sukzessiv.net"
 UPLOAD_USER = "vc4-buildbot"
 UPLOAD_KEY = os.path.dirname(os.path.realpath(__file__)) + "/sukzessiv-net.pem"
 UPLOAD_PATH = "~/upload/"
-RASPBIAN_IMG_ENLARGE_BY_MB = 774
+RASPBIAN_IMG_ENLARGE_BY_MB = 500
 # this can be determined from fdisk *.img
 RASPBIAN_IMG_BYTES_PER_SECTOR = 512
 RASPBIAN_IMG_START_SECTOR_VFAT = 8192
@@ -79,6 +79,11 @@ def TarProcessing():
 def ResizeRaspbianImage(fn, mbToAdd):
 	subprocess.check_call("dd if=/dev/zero bs=1M count=" + str(mbToAdd) + " >>" + fn, shell=True)
 	subprocess.check_call("fdisk " + fn + " <<EOF\nd\n2\nn\np\n2\n" + str(RASPBIAN_IMG_START_SECTOR_EXT4) + "\n\nw\nEOF", shell=True)
+	subprocess.check_call("dd if=" + fn + " bs=" + RASPBIAN_IMG_BYTES_PER_SECTOR + " count=" + RASPBIAN_IMG_START_SECTOR_EXT4 + " of=/tmp/part1", shell=True)
+	subprocess.check_call("dd if=" + fn + " bs=" + RASPBIAN_IMG_BYTES_PER_SECTOR + " skip=" + RASPBIAN_IMG_START_SECTOR_EXT4 + " of=/tmp/part2", shell=True)
+	subprocess.check_call("e2fsck -f /tmp/part2", shell=True)
+	subprocess.check_call("resize2fs /tmp/part2", shell=True)
+	subprocess.check_call("cat /tmp/part1 /tmp/part2 > " + fn, shell=True)
 
 def BuildRaspbianImage(overlay):
 	subprocess.check_call("apt-get -y install zip", shell=True)
