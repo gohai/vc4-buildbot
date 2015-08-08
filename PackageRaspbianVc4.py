@@ -79,8 +79,8 @@ def TarProcessing():
 def ResizeRaspbianImage(fn, mbToAdd):
 	subprocess.check_call("dd if=/dev/zero bs=1M count=" + str(mbToAdd) + " >>" + fn, shell=True)
 	subprocess.check_call("fdisk " + fn + " <<EOF\nd\n2\nn\np\n2\n" + str(RASPBIAN_IMG_START_SECTOR_EXT4) + "\n\nw\nEOF", shell=True)
-	subprocess.check_call("dd if=" + fn + " bs=" + RASPBIAN_IMG_BYTES_PER_SECTOR + " count=" + RASPBIAN_IMG_START_SECTOR_EXT4 + " of=/tmp/part1", shell=True)
-	subprocess.check_call("dd if=" + fn + " bs=" + RASPBIAN_IMG_BYTES_PER_SECTOR + " skip=" + RASPBIAN_IMG_START_SECTOR_EXT4 + " of=/tmp/part2", shell=True)
+	subprocess.check_call("dd if=" + fn + " bs=" + str(RASPBIAN_IMG_BYTES_PER_SECTOR) + " count=" + str(RASPBIAN_IMG_START_SECTOR_EXT4) + " of=/tmp/part1", shell=True)
+	subprocess.check_call("dd if=" + fn + " bs=" + str(RASPBIAN_IMG_BYTES_PER_SECTOR) + " skip=" + str(RASPBIAN_IMG_START_SECTOR_EXT4) + " of=/tmp/part2", shell=True)
 	subprocess.check_call("e2fsck -f /tmp/part2", shell=True)
 	subprocess.check_call("resize2fs /tmp/part2", shell=True)
 	subprocess.check_call("cat /tmp/part1 /tmp/part2 > " + fn, shell=True)
