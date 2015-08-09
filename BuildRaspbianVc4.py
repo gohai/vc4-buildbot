@@ -246,7 +246,6 @@ def buildMesa():
 		subprocess.check_call("mv /usr/lib/arm-linux-gnueabihf/libxcb* /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
 	subprocess.check_call("ldconfig", shell=True)
 	# XXX: unsure if swrast is needed
-	# XXX: check output (shader cache etc)
 	# --enable-glx-tls matches Raspbian's config
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --with-gallium-drivers=vc4 --enable-gles1 --enable-gles2 --with-egl-platforms=x11,drm --with-dri-drivers=swrast --enable-dri3 --enable-glx-tls --enable-omx", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
