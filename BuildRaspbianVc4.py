@@ -485,7 +485,10 @@ def buildGstreamer():
 	# Raspbian seem to have a modified (?) gstreamer-1.0 that hooks into OpenMAX IL
 	# let's see how the latest version of gstreamer performs
 	# this should have support for vdpau and omx, not: vaapi
-	subprocess.check_call("apt-get -y install libglib2.0-dev", shell=True)
+	# gst-plugins-bad checks for bcm_init on the host system
+	# vdpau needs at least libvdpau1 installed on the host system to work
+	# XXX: compile libvdpau from sources?
+	subprocess.check_call("apt-get -y install libglib2.0-dev libvdpau-dev", shell=True)
 	for pkg in ["gstreamer", "gst-plugins-base", "gst-plugins-good", "gst-plugins-bad", "gst-plugins-ugly", "gst-libav"]:
 		if not os.path.exists("/usr/local/src/" + pkg):
 			# 1.4 is the current stable branch

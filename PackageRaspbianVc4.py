@@ -120,6 +120,9 @@ def BuildRaspbianImage(overlay):
 	subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install libglew1.7", shell=True)
 	# install gstreamer0.10 plugins for processing-video
 	subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly gstreamer0.10-ffmpeg", shell=True)
+	# install libvdpau for gst-plugins-bad
+	# XXX: vdpau-driver, vdpauinfo
+	subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install libvdpau1", shell=True)
 	# move the binary graphics driver to disable jogl's auto-detection
 	subprocess.check_call("mv /tmp/raspbian-vc4/live/opt/vc /tmp/raspbian-vc4/live/opt/vc.bak", shell=True)
 	# rebuild ld.so.cache
