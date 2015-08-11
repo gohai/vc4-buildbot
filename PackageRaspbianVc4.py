@@ -84,6 +84,7 @@ def ResizeRaspbianImage(fn, mbToAdd):
 	subprocess.check_call("e2fsck -f /tmp/part2", shell=True)
 	subprocess.check_call("resize2fs /tmp/part2", shell=True)
 	subprocess.check_call("cat /tmp/part1 /tmp/part2 > " + fn, shell=True)
+	subprocess.check_call("rm -f /tmp/part1 /tmp/part2", shell=True)
 
 def BuildRaspbianImage(overlay):
 	subprocess.check_call("apt-get -y install zip", shell=True)
