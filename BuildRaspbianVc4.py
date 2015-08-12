@@ -559,10 +559,10 @@ def buildExtraProcessing():
 	#os.chdir("/usr/local/src/processing/build")
 	#subprocess.check_call("rm -rf openjfx*", shell=True)
 	# copy the simplevideo library
-	subprocess.check_call("wget -q http://github.com/gohai/processing-simplevideo/archive/master.zip", shell=True)
-	subprocess.check_call("unzip master.zip", shell=True)
-	subprocess.check_call("mv processing-simplevideo-master /usr/local/lib/processing/modes/java/libraries/simplevideo", shell=True)
-	subprocess.check_call("rm -f master.zip", shell=True)
+	#subprocess.check_call("wget -q http://github.com/gohai/processing-simplevideo/archive/master.zip", shell=True)
+	#subprocess.check_call("unzip master.zip", shell=True)
+	#subprocess.check_call("mv processing-simplevideo-master /usr/local/lib/processing/modes/java/libraries/simplevideo", shell=True)
+	#subprocess.check_call("rm -f master.zip", shell=True)
 	# copy the test script
 	subprocess.check_call("cp -f " + DATA_DIR + "/processing-test3d.* /home/pi", shell=True)
 	subprocess.check_call("chown pi:pi /home/pi/processing-test3d.*", shell=True)
