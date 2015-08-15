@@ -240,8 +240,8 @@ def buildLibXShmFence():
 	issue['libxshmfence'] = getGitInfo()
 
 def buildMesa():
-	# XXX: compile libvdpau from sources?
-	subprocess.check_call("apt-get -y install bison flex python-mako libx11-dev libx11-xcb-dev libxext-dev libxdamage-dev libxfixes-dev libudev-dev libexpat-dev gettext libomxil-bellagio-dev libvdpau-dev", shell=True)
+	# XXX: compile libvdpau from sources (needs to be >= 1.1 but the packaged one is 0.4.1, re-add --enable-vdpau)
+	subprocess.check_call("apt-get -y install bison flex python-mako libx11-dev libx11-xcb-dev libxext-dev libxdamage-dev libxfixes-dev libudev-dev libexpat-dev gettext libomxil-bellagio-dev", shell=True)
 	if not os.path.exists("/usr/local/src/mesa"):
 		subprocess.check_call("git clone " + MESA_GIT_REPO + " /usr/local/src/mesa", shell=True)
 	os.chdir("/usr/local/src/mesa")
@@ -255,7 +255,7 @@ def buildMesa():
 	subprocess.check_call("ldconfig", shell=True)
 	# XXX: unsure if swrast is needed
 	# --enable-glx-tls matches Raspbian's config
-	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --with-gallium-drivers=vc4 --enable-gles1 --enable-gles2 --with-egl-platforms=x11,drm --with-dri-drivers=swrast --enable-dri3 --enable-glx-tls --enable-omx --enable-vdpau", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --with-gallium-drivers=vc4 --enable-gles1 --enable-gles2 --with-egl-platforms=x11,drm --with-dri-drivers=swrast --enable-dri3 --enable-glx-tls --enable-omx", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
@@ -496,7 +496,7 @@ def buildGstreamer():
 	# gst-plugins-bad checks for bcm_init on the host system
 	# vdpau needs libvdpau1 installed on the host system to work (vdpauinfo still complains about a missing libvdpau_vc4.so)
 	# unsure if omx needs libomxil-bellagio0 libomxil-bellagio0-components-* on host system (omx does not show up in gst-inspect-1.0 either way)
-	subprocess.check_call("apt-get -y install libglib2.0-dev", shell=True)
+	subprocess.check_call("apt-get -y install libglib2.0-dev libvdpau-dev", shell=True)
 	for pkg in ["gstreamer", "gst-plugins-base", "gst-plugins-good", "gst-plugins-bad", "gst-plugins-ugly", "gst-libav"]:
 		if not os.path.exists("/usr/local/src/" + pkg):
 			# 1.4 is the current stable branch
