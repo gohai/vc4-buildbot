@@ -14,6 +14,7 @@ import subprocess
 import json
 
 EXAMPLES_DIR = "/usr/local/lib/processing/modes/java/examples"
+PROCESSING_CMD = "processing-java"
 
 def default_input(message, defaultVal):
 	if defaultVal:
@@ -47,7 +48,7 @@ for row in data.get("tests", []):
 		row["result"] = -1
 	if ignore is not 1 and result is None:
 		try:
-			retval = subprocess.call("echo Running " + sketch + " | tee -a processing-test3d.out && processing-java --sketch=\"" + EXAMPLES_DIR + "/" + sketch + "\" --run 2>&1 | tee -a processing-test3d.out", shell=True)
+			retval = subprocess.call("echo Running " + sketch + " | tee -a processing-test3d.out && " + PROCESSING_CMD + " --sketch=\"" + EXAMPLES_DIR + "/" + sketch + "\" --run 2>&1 | tee -a processing-test3d.out", shell=True)
 		except KeyboardInterrupt:
 			retval = 0
 		if retval is not 0:
