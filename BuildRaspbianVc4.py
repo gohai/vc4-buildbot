@@ -50,6 +50,9 @@ def updateHostApt():
 def updateConfigTxt():
 	txt = file_get_contents("/boot/config.txt")
 	added_comment = 0
+	match = re.findall(r'^# added for vc4 driver$', txt, re.MULTILINE)
+	if 0 < len(match):
+		added_comment = 1
 	# set mask_gpu_interrupt0=0x400
 	match = re.findall(r'^mask_gpu_interrupt0=(.*)$', txt, re.MULTILINE)
 	if 0 < len(match):
