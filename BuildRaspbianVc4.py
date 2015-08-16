@@ -130,7 +130,7 @@ def updateRcLocalForLeds():
 	rclocal = file_get_contents("/etc/rc.local")
 	match = re.findall(r'^chmod -R a\+rw /sys/class/leds/\*$', rclocal, re.MULTILINE)
 	if 0 == len(match):
-		rclocal = re.sub('exit 0', '# allow regular users to control the leds\nchmod -R a+rw /sys/class/leds/*\n\nexit 0', rclocal)
+		rclocal = re.sub('exit 0\n', '# allow regular users to control the leds\nchmod -R a+rw /sys/class/leds/*\n\nexit 0\n', rclocal)
 		file_put_contents("/etc/rc.local", rclocal)
 
 def getGitInfo():
