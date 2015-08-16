@@ -124,6 +124,15 @@ def updateUdevGpioRule():
 	udev = re.sub('/sys/devices/virtual/gpio\'', '/sys/devices/virtual/gpio; chown -RH root:gpio /sys/class/gpio/* && chmod -R 770 /sys/class/gpio/*\'', udev)
 	file_put_contents("/etc/udev/rules.d/99-com.rules", udev)
 
+def updateRcLocalForLeds():
+	# LEDs can only be controlled by the root user by default
+	# couldn't get a udev rule for this to work
+	rclocal = file_get_contents("/etc/rc.local")
+	match = re.findall(r'^chmod -R a+rw /sys/devices/platform/soc/soc:leds/leds$', rclocal, re.MULTILINE)
+	if 0 == len(match):
+		rclocal = re.sub('exit 0', '# allow regular users to control the leds\nchmod -R a+rw /sys/devices/platform/soc/soc:leds/leds\n\nexit 0', rclocal)
+		file_put_contents("/etc/rc.local", rclocal)
+
 def getGitInfo():
 	info = {}
 	info['commit'] = subprocess.check_output("git rev-parse HEAD", shell=True).rstrip()
@@ -609,6 +618,7 @@ updateConfigTxt()
 updateLdConfig()
 enableCoredumps()
 updateUdevGpioRule()
+updateRcLocalForLeds()
 enableDebugEnvVars()
 # build Processing first since chances are that I screwed up somewhere
 buildExtraProcessing()
