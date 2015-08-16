@@ -89,6 +89,7 @@ def updateConfigTxt():
 	#		added_comment = 1
 	#	txt = txt + "dtoverlay=sdhost\n"
 	# enable /dev/spidev* nodes by default
+	# XXX: works but prints a backtrace at startup (DT related)
 	match = re.findall(r'^dtparam=spi=on$', txt, re.MULTILINE)
 	if 0 == len(match):
 		if not added_comment:
