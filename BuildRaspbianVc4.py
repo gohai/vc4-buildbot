@@ -596,7 +596,7 @@ def buildExtraProcessingVideo():
 		subprocess.check_call("git clone https://github.com/processing/processing-video.git /usr/local/src/processing-video", shell=True)
 	os.chdir("/usr/local/src/processing-video")
 	subprocess.call("git fetch", shell=True)
-	subprocess.check_call("git checkout -f -B gohai-arm origin/gohai-arm", shell=True)
+	subprocess.check_call("git checkout -f -B master origin/master", shell=True)
 	subprocess.check_call("printf \"core.classpath.location=/usr/local/lib/processing/core/library\\ncompiler.classpath.location=/usr/local/lib/processing/java/mode\" > build.properties", shell=True)
 	subprocess.check_call("ant build", shell=True)
 	subprocess.check_call("mkdir -p /usr/local/lib/processing/modes/java/libraries/video", shell=True)
