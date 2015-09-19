@@ -1,5 +1,5 @@
 diff --git a/src/glsl/Makefile.sources b/src/glsl/Makefile.sources
-index da7fdf9..6bce2af 100644
+index 1aaa062..f7c69f4 100644
 --- a/src/glsl/Makefile.sources
 +++ b/src/glsl/Makefile.sources
 @@ -43,7 +43,7 @@ NIR_FILES = \
