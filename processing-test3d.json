@@ -72,7 +72,12 @@
         },
         {
             "ignore": 0,
-            "sketch": "Demos/Graphics/LowLevelGL",
+            "sketch": "Demos/Graphics/LowLevelGLVboInterleaved",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
+            "sketch": "Demos/Graphics/LowLevelGLVboSeparate",
             "renderer": "P3D"
         },
         {
