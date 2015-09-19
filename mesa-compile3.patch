@@ -2,15 +2,15 @@ diff --git a/src/glsl/Makefile.sources b/src/glsl/Makefile.sources
 index da7fdf9..6bce2af 100644
 --- a/src/glsl/Makefile.sources
 +++ b/src/glsl/Makefile.sources
-@@ -42,7 +42,7 @@ NIR_FILES = \
- 	nir/nir_lower_io.c \
- 	nir/nir_lower_outputs_to_temporaries.c \
- 	nir/nir_lower_phis_to_scalar.c \
--	nir/nir_lower_samplers.cpp \
-+	nir/nir_lower_samplers.c \
- 	nir/nir_lower_system_values.c \
- 	nir/nir_lower_tex_projector.c \
- 	nir/nir_lower_to_source_mods.c \
+@@ -43,7 +43,7 @@ NIR_FILES = \
+        nir/nir_lower_io.c \
+        nir/nir_lower_outputs_to_temporaries.c \
+        nir/nir_lower_phis_to_scalar.c \
+-       nir/nir_lower_samplers.cpp \
++       nir/nir_lower_samplers.c \
+        nir/nir_lower_system_values.c \
+        nir/nir_lower_tex.c \
+        nir/nir_lower_to_source_mods.c \
 diff --git a/src/glsl/nir/nir_lower_samplers.cpp b/src/glsl/nir/nir_lower_samplers.c
 similarity index 98%
 rename from src/glsl/nir/nir_lower_samplers.cpp
