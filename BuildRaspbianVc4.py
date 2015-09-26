@@ -402,12 +402,7 @@ def buildMesaDemos():
 	if not os.path.exists("/usr/local/src/mesa-demos"):
 		subprocess.check_call("git clone git://anongit.freedesktop.org/mesa/demos /usr/local/src/mesa-demos", shell=True)
 	os.chdir("/usr/local/src/mesa-demos")
-	# to prevent re-applying the patch below
-	subprocess.call("git reset --hard", shell=True)
 	subprocess.call("git pull", shell=True)
-	# fix compile errors related to EGL_MESA_screen_surface removal
-	# see https://bugs.freedesktop.org/show_bug.cgi?id=91020
-	subprocess.check_call("patch -p1 < " + DATA_DIR + "/mesa-demos-91020.patch", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
