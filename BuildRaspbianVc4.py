@@ -258,16 +258,9 @@ def buildMesa():
 	if not os.path.exists("/usr/local/src/mesa"):
 		subprocess.check_call("git clone " + MESA_GIT_REPO + " /usr/local/src/mesa", shell=True)
 	os.chdir("/usr/local/src/mesa")
-	# for patches (see below)
-	subprocess.check_call("git reset --hard", shell=True)
-	subprocess.check_call("git clean -f", shell=True)
 	subprocess.check_call("git remote set-url origin " + MESA_GIT_REPO, shell=True)
 	subprocess.call("git fetch", shell=True)
 	subprocess.check_call("git checkout -f -B " + MESA_GIT_BRANCH + " origin/" + MESA_GIT_BRANCH, shell=True)
-	# apply patches
-	subprocess.check_call("git apply " + DATA_DIR + "/mesa-compile1.patch", shell=True)
-	subprocess.check_call("git apply " + DATA_DIR + "/mesa-compile2.patch", shell=True)
-	subprocess.check_call("git apply " + DATA_DIR + "/mesa-compile3.patch", shell=True)
 	# workaround https://bugs.freedesktop.org/show_bug.cgi?id=80848
 	if not os.path.exists("/usr/lib/arm-linux-gnueabihf/tmp-libxcb"):
 		subprocess.call("mkdir /usr/lib/arm-linux-gnueabihf/tmp-libxcb", shell=True)
