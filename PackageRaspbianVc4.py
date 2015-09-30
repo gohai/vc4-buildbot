@@ -117,11 +117,12 @@ def BuildRaspbianImage(overlay):
 	# remove obsolete kernel modules
 	subprocess.check_call("rm -Rf /tmp/raspbian-vc4/live/lib/modules/*", shell=True)
 	subprocess.check_call("tar vfxp " + overlay, shell=True)
-	# install libglew1.7 needed for mesa-demos
-	subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install libglew1.7", shell=True)
+	# install libglew1.7 needed for mesa-demos (seems to be installed by default in Jessie)
+	#subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install libglew1.7", shell=True)
 	# install gstreamer0.10 plugins for processing-video
-	subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly gstreamer0.10-ffmpeg", shell=True)
-	# install libvdpau for gst-plugins-bad
+	# XXX: gstreamer0.10-ffmpeg is no longer available in Jessie
+	subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly", shell=True)
+	# install libvdpau for gst-plugins-bad (seems to be installed by default in Jessie)
 	# XXX: http://mirrordirector.raspbian.org/raspbian/pool/main/libv/libvdpau/libvdpau1_0.4.1-7_armhf.deb currently gives 404
 	# XXX: vdpau-driver, vdpauinfo
 	#subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install libvdpau1", shell=True)
@@ -129,11 +130,11 @@ def BuildRaspbianImage(overlay):
 	subprocess.check_call("mv /tmp/raspbian-vc4/live/opt/vc /tmp/raspbian-vc4/live/opt/vc.bak", shell=True)
 	# rebuild ld.so.cache
 	subprocess.check_call("ldconfig -r /tmp/raspbian-vc4/live", shell=True)
-	# enable sshd by default
-	subprocess.check_call("ln -s ../init.d/ssh etc/rc2.d/S02ssh", shell=True)
-	subprocess.check_call("ln -s ../init.d/ssh etc/rc3.d/S02ssh", shell=True)
-	subprocess.check_call("ln -s ../init.d/ssh etc/rc4.d/S02ssh", shell=True)
-	subprocess.check_call("ln -s ../init.d/ssh etc/rc5.d/S02ssh", shell=True)
+	# enable sshd by default (seems to be enabled by default in Jessie, which probably also uses systemd unit files)
+	#subprocess.check_call("ln -s ../init.d/ssh etc/rc2.d/S02ssh", shell=True)
+	#subprocess.check_call("ln -s ../init.d/ssh etc/rc3.d/S02ssh", shell=True)
+	#subprocess.check_call("ln -s ../init.d/ssh etc/rc4.d/S02ssh", shell=True)
+	#subprocess.check_call("ln -s ../init.d/ssh etc/rc5.d/S02ssh", shell=True)
 	os.chdir("/tmp/raspbian-vc4")
 	subprocess.check_call("umount live/boot", shell=True)
 	subprocess.check_call("umount live", shell=True)
