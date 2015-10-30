@@ -130,11 +130,6 @@ def BuildRaspbianImage(overlay):
 	subprocess.check_call("mv /tmp/raspbian-vc4/live/opt/vc /tmp/raspbian-vc4/live/opt/vc.bak", shell=True)
 	# rebuild ld.so.cache
 	subprocess.check_call("ldconfig -r /tmp/raspbian-vc4/live", shell=True)
-	# enable sshd by default (seems to be enabled by default in Jessie, which probably also uses systemd unit files)
-	#subprocess.check_call("ln -s ../init.d/ssh etc/rc2.d/S02ssh", shell=True)
-	#subprocess.check_call("ln -s ../init.d/ssh etc/rc3.d/S02ssh", shell=True)
-	#subprocess.check_call("ln -s ../init.d/ssh etc/rc4.d/S02ssh", shell=True)
-	#subprocess.check_call("ln -s ../init.d/ssh etc/rc5.d/S02ssh", shell=True)
 	os.chdir("/tmp/raspbian-vc4")
 	subprocess.check_call("umount live/boot", shell=True)
 	subprocess.check_call("umount live", shell=True)
