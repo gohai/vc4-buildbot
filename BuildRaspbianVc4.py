@@ -93,12 +93,12 @@ def updateConfigTxt():
 	#	txt = txt + "dtoverlay=sdhost\n"
 	# enable /dev/spidev* nodes by default
 	# XXX: works but prints a backtrace at startup (DT related)
-	match = re.findall(r'^dtparam=spi=on$', txt, re.MULTILINE)
-	if 0 == len(match):
-		if not added_comment:
-			txt = txt.strip() + "\n\n" + "# added for processing-io\n"
-			added_comment = 1
-		txt = txt + "dtparam=spi=on\n"
+	#match = re.findall(r'^dtparam=spi=on$', txt, re.MULTILINE)
+	#if 0 == len(match):
+	#	if not added_comment:
+	#		txt = txt.strip() + "\n\n" + "# added for processing-io\n"
+	#		added_comment = 1
+	#	txt = txt + "dtparam=spi=on\n"
 	file_put_contents("/boot/config.txt", txt)
 
 def updateLdConfig():
