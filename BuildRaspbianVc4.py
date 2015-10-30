@@ -14,10 +14,10 @@ import subprocess
 import re
 import json
 
-LINUX_GIT_REPO_2708 = "https://github.com/anholt/linux.git"
-LINUX_GIT_BRANCH_2708 = "vc4-kms-v3d-rpi2"
-LINUX_GIT_REPO_2709 = "https://github.com/anholt/linux.git"
-LINUX_GIT_BRANCH_2709 = "vc4-kms-v3d-rpi2"
+LINUX_GIT_REPO_2708 = "https://github.com/raspberrypi/linux.git"
+LINUX_GIT_BRANCH_2708 = "rpi-4.2.y"
+LINUX_GIT_REPO_2709 = "https://github.com/raspberrypi/linux.git"
+LINUX_GIT_BRANCH_2709 = "rpi-4.2.y"
 MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
 MESA_GIT_BRANCH = "master"
 PROCESSING_GIT_REPO = "https://github.com/processing/processing.git"
@@ -80,6 +80,13 @@ def updateConfigTxt():
 			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
 			added_comment = 1
 		txt = txt + "disable_overscan=1\n"
+	# add vc4 overlay
+	match = re.findall(r'^dtparam=vc4-kms-v3d-overlay$', txt, re.MULTILINE)
+	if 0 == len(match):
+		if not added_comment:
+			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
+			added_comment = 1
+		txt = txt + "dtparam=vc4-kms-v3d-overlay\n"
 	# bcm2835-sdhost dies for me waiting for hardware interrupts, don't enable by default
 	# bcm2835-sdhost is a newer, more performative driver currently present only in downstream kernels
 	# we could also set this to dtoverlay=sdhost,overclock_50=63 or dtoverlay=sdhost,overclock_50=84
@@ -490,9 +497,9 @@ def buildLinux():
 	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel7.img", shell=True)
 	subprocess.check_call("cp .config /boot/kernel7.img-config", shell=True)
-	# bcm2835-sdhost is a newer, more performative driver currently present only in downstream kernels
-	subprocess.check_call("make overlays/sdhost-overlay.dtb", shell=True)
-	subprocess.check_call("cp arch/arm/boot/dts/overlays/sdhost-overlay.dtb /boot/overlays/", shell=True)
+	# build the overlay for the vc4 driver
+	subprocess.check_call("make overlays/vc4-kms-v3d-overlay.dtb", shell=True)
+	subprocess.check_call("cp arch/arm/boot/dts/overlays/vc4-kms-v3d-overlay.dtb /boot/overlays/", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make mrproper", shell=True)
 	issue['linux-2709'] = getGitInfo()
