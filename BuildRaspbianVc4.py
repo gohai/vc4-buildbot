@@ -493,9 +493,8 @@ def buildLinux():
 	# bcm2835-sdhost is a newer, more performative driver currently present only in downstream kernels
 	subprocess.check_call("make overlays/sdhost-overlay.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/overlays/sdhost-overlay.dtb /boot/overlays/", shell=True)
-	# XXX: temporarily disabled
-	#if CLEANUP:
-	#	subprocess.check_call("make mrproper", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make mrproper", shell=True)
 	issue['linux-2709'] = getGitInfo()
 
 def buildGstreamer():
