@@ -618,7 +618,7 @@ updateRcLocalForLeds()
 enableDebugEnvVars()
 # build Processing first since chances are that I screwed up somewhere
 buildExtraProcessing()
-buildExtraProcessingVideo()
+#buildExtraProcessingVideo()
 # mesa and friends
 buildXorgMacros()
 buildXcbProto()
