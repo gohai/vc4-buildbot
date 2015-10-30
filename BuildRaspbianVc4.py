@@ -613,7 +613,8 @@ updateHostApt()
 updateConfigTxt()
 updateLdConfig()
 enableCoredumps()
-updateUdevGpioRule()
+# not needed anymore?
+#updateUdevGpioRule()
 updateRcLocalForLeds()
 enableDebugEnvVars()
 # build Processing first since chances are that I screwed up somewhere
