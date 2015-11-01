@@ -86,7 +86,7 @@ def updateConfigTxt():
 		if not added_comment:
 			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
 			added_comment = 1
-		txt = txt + "dtparam=vc4-kms-v3d-overlay\n"
+		txt = txt + "dtoverlay=vc4-kms-v3d-overlay\n"
 	file_put_contents("/boot/config.txt", txt)
 
 def updateLdConfig():
