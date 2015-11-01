@@ -475,6 +475,9 @@ def buildLinux():
 	subprocess.check_call("make modules_install", shell=True)
 	subprocess.check_call("make bcm2709-rpi-2-b.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/bcm2709-rpi-2-b.dtb /boot/bcm2709-rpi-2-b.dtb", shell=True)
+	# overlays are automatically generated with DT-enabled configs
+	subprocess.check_call("rm -rf /boot/overlays/*.dtb", shell=True)
+	subprocess.check_call("cp arch/arm/boot/dts/overlays/*.dtb /boot/overlays", shell=True)
 	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel7.img", shell=True)
 	subprocess.check_call("cp .config /boot/kernel7.img-config", shell=True)
