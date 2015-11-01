@@ -457,6 +457,8 @@ def buildLinux():
 	subprocess.check_call("cp arch/arm/boot/dts/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b.dtb", shell=True)
 	subprocess.check_call("make bcm2708-rpi-b-plus.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/bcm2708-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb", shell=True)
+	subprocess.check_call("make bcm2708-rpi-cm.dtb", shell=True)
+	subprocess.check_call("cp arch/arm/boot/dts/bcm2708-rpi-cm.dtb /boot/bcm2708-rpi-cm.dtb", shell=True)
 	# this signals to the bootloader that device tree is supported
 	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel.img", shell=True)
