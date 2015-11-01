@@ -158,6 +158,8 @@ if not os.path.exists("/boot/kernel7.img.orig"):
 	subprocess.call("cp /boot/kernel7.img /boot/kernel7.img.orig", shell=True)
 if not os.path.exists("/boot/bcm2709-rpi-2-b.dtb.orig"):
 	subprocess.call("cp /boot/bcm2709-rpi-2-b.dtb /boot/bcm2709-rpi-2-b.dtb.orig", shell=True)
+if not os.path.exists("/boot/overlays.orig"):
+	subprocess.call("cp -r /boot/overlays /boot/overlays.orig", shell=True)
 ret = BuildRaspbianVc4()
 if not ret:
 	# success
@@ -169,6 +171,8 @@ subprocess.call("mv /boot/bcm2708-rpi-b.dtb.orig /boot/bcm2708-rpi-b.dtb", shell
 subprocess.call("mv /boot/bcm2708-rpi-b-plus.dtb.orig /boot/bcm2708-rpi-b-plus.dtb", shell=True)
 subprocess.call("mv /boot/kernel7.img.orig /boot/kernel7.img", shell=True)
 subprocess.call("mv /boot/bcm2709-rpi-2-b.dtb.orig /boot/bcm2709-rpi-2-b.dtb", shell=True)
+subprocess.call("rm -rf /boot/overlays", shell=True)
+subprocess.call("mv /boot/overlays.orig /boot/overlays", shell=True)
 if not ret:
 	BuildRaspbianImage(tar)
 ret = UploadTempFiles()
