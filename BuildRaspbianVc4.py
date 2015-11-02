@@ -486,8 +486,8 @@ def buildLinux():
 	# build the overlay for the vc4 driver
 	subprocess.check_call("make overlays/vc4-kms-v3d-overlay.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/overlays/vc4-kms-v3d-overlay.dtb /boot/overlays/", shell=True)
-	#if CLEANUP:
-	#	subprocess.check_call("make mrproper", shell=True)
+	if CLEANUP:
+		subprocess.check_call("make mrproper", shell=True)
 	issue['linux-2709'] = getGitInfo()
 
 def buildGstreamer():
