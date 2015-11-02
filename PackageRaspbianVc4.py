@@ -114,6 +114,8 @@ def BuildRaspbianImage(overlay):
 	lightdmconf = file_get_contents("/tmp/raspbian-vc4/live/etc/lightdm/lightdm.conf")
 	lightdmconf = re.sub("#xserver-command=X", "xserver-command=/usr/local/bin/Xorg", lightdmconf)
 	file_put_contents("/tmp/raspbian-vc4/live/etc/lightdm/lightdm.conf", lightdmconf)
+	# remove obsolete DT overlay files
+	subprocess.check_call("rm -Rf /boot/overlays/*.dtb", shell=True)
 	# remove obsolete kernel modules
 	subprocess.check_call("rm -Rf /tmp/raspbian-vc4/live/lib/modules/*", shell=True)
 	subprocess.check_call("tar vfxp " + overlay, shell=True)
