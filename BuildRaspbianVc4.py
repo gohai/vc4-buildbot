@@ -81,12 +81,12 @@ def updateConfigTxt():
 			added_comment = 1
 		txt = txt + "disable_overscan=1\n"
 	# add vc4 overlay
-	match = re.findall(r'^dtparam=vc4-kms-v3d-overlay$', txt, re.MULTILINE)
+	match = re.findall(r'^dtoverlay=vc4-kms-v3d$', txt, re.MULTILINE)
 	if 0 == len(match):
 		if not added_comment:
 			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
 			added_comment = 1
-		txt = txt + "dtoverlay=vc4-kms-v3d-overlay\n"
+		txt = txt + "dtoverlay=vc4-kms-v3d\n"
 	file_put_contents("/boot/config.txt", txt)
 
 def updateLdConfig():
