@@ -72,14 +72,14 @@ def updateConfigTxt():
 	# set disable_overscan=1 to workaround a bug in vc4 where the
 	# mouse cursor does not take the margins around the image into
 	# account
-	match = re.findall(r'^disable_overscan=(.*)$', txt, re.MULTILINE)
-	if 0 < len(match):
-		txt = re.sub(r'(^)disable_overscan=(.*)($)', r'\1disable_overscan=1\3', txt, 0, re.MULTILINE)
-	else:
-		if not added_comment:
-			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
-			added_comment = 1
-		txt = txt + "disable_overscan=1\n"
+	#match = re.findall(r'^disable_overscan=(.*)$', txt, re.MULTILINE)
+	#if 0 < len(match):
+	#	txt = re.sub(r'(^)disable_overscan=(.*)($)', r'\1disable_overscan=1\3', txt, 0, re.MULTILINE)
+	#else:
+	#	if not added_comment:
+	#		txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
+	#		added_comment = 1
+	#	txt = txt + "disable_overscan=1\n"
 	# add vc4 overlay
 	match = re.findall(r'^dtoverlay=vc4-kms-v3d$', txt, re.MULTILINE)
 	if 0 == len(match):
@@ -471,6 +471,8 @@ def buildLinux():
 	subprocess.check_call("make mrproper", shell=True)
 	subprocess.check_call("cp " + DATA_DIR + "/config-2709 .config", shell=True)
 	subprocess.check_call("make olddefconfig", shell=True)
+	# change the CMA size in overlay to 256 MB
+	subprocess.check_call("sed -i 's/cma=0x4000000/cma=0x10000000/' arch/arm/boot/dts/overlays/vc4-kms-v3d-overlay.dts", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
 	subprocess.check_call("rm -rf /lib/modules/*-2709*", shell=True)
