@@ -471,6 +471,8 @@ def buildLinux():
 	subprocess.check_call("make mrproper", shell=True)
 	subprocess.check_call("cp " + DATA_DIR + "/config-2709 .config", shell=True)
 	subprocess.check_call("make olddefconfig", shell=True)
+	# change the CMA size in overlay to 256 MB
+	subprocess.check_call("sed -i 's/cma=0x4000000/cma=0x10000000/' arch/arm/boot/dts/overlays/vc4-kms-v3d-overlay.dts", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
 	subprocess.check_call("rm -rf /lib/modules/*-2709*", shell=True)
