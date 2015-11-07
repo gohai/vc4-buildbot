@@ -54,6 +54,7 @@ def updateConfigTxt():
 	if 0 < len(match):
 		added_comment = 1
 	# set mask_gpu_interrupt0=0x400
+	# XXX: this is not necessary anymore with newer firmwares
 	match = re.findall(r'^mask_gpu_interrupt0=(.*)$', txt, re.MULTILINE)
 	if 0 < len(match):
 		txt = re.sub(r'(^)mask_gpu_interrupt0=(.*)($)', r'\1mask_gpu_interrupt0=0x400\3', txt, 0, re.MULTILINE)
