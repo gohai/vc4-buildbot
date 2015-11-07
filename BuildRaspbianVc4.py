@@ -61,7 +61,7 @@ def updateConfigTxt():
 	else:
 		txt = txt.strip() + "\n\n" + "# added for vc4 driver\n" + "mask_gpu_interrupt0=0x400\n"
 		added_comment = 1
-	# set avoid_warnings=1 to remove warning overlay
+	# set avoid_warnings=2 to remove warning overlay
 	match = re.findall(r'^avoid_warnings=(.*)$', txt, re.MULTILINE)
 	if 0 < len(match):
 		txt = re.sub(r'(^)avoid_warnings=(.*)($)', r'\1avoid_warnings=2\3', txt, 0, re.MULTILINE)
