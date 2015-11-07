@@ -446,9 +446,10 @@ def buildLinux():
 	subprocess.call("git fetch", shell=True)
 	subprocess.check_call("git checkout -f -B " + LINUX_GIT_BRANCH_2708 + " origin/" + LINUX_GIT_BRANCH_2708, shell=True)
 	subprocess.check_call("make mrproper", shell=True)
-	subprocess.check_call("cp " + DATA_DIR + "/config-2708 .config", shell=True)
-	# XXX: change localversion, document changes to raspbian original
-	subprocess.check_call("make olddefconfig", shell=True)
+	#subprocess.check_call("cp " + DATA_DIR + "/config-2708 .config", shell=True)
+	subprocess.check_call("make bcmrpi_defconfig", shell=True)
+	# change localversion
+	subprocess.check_call("sed -i 's/CONFIG_LOCALVERSION=\"\"/CONFIG_LOCALVERSION=\"-2708\"/' .config", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
 	# remove old kernel versions
@@ -470,8 +471,10 @@ def buildLinux():
 	subprocess.call("git fetch", shell=True)
 	subprocess.check_call("git checkout -f -B " + LINUX_GIT_BRANCH_2709 + " origin/" + LINUX_GIT_BRANCH_2709, shell=True)
 	subprocess.check_call("make mrproper", shell=True)
-	subprocess.check_call("cp " + DATA_DIR + "/config-2709 .config", shell=True)
-	subprocess.check_call("make olddefconfig", shell=True)
+	#subprocess.check_call("cp " + DATA_DIR + "/config-2709 .config", shell=True)
+	subprocess.check_call("make bcm2709_defconfig", shell=True)
+	# change localversion
+	subprocess.check_call("sed -i 's/CONFIG_LOCALVERSION=\"-v7\"/CONFIG_LOCALVERSION=\"-2709\"/' .config", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
 	subprocess.check_call("rm -rf /lib/modules/*-2709*", shell=True)
