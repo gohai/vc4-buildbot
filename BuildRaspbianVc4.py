@@ -47,6 +47,10 @@ def checkRoot():
 def updateHostApt():
 	subprocess.check_call("apt-get -y update", shell=True)
 
+def updateFirmware():
+	# mask_gpu_interrupt0 gets obsoleted by a post-Jesse firmware update
+	subprocess.check_call("rpi-update", shell=True)
+
 def updateConfigTxt():
 	txt = file_get_contents("/boot/config.txt")
 	added_comment = 0
@@ -54,13 +58,13 @@ def updateConfigTxt():
 	if 0 < len(match):
 		added_comment = 1
 	# set mask_gpu_interrupt0=0x400
-	# XXX: this is not necessary anymore with newer firmwares
-	match = re.findall(r'^mask_gpu_interrupt0=(.*)$', txt, re.MULTILINE)
-	if 0 < len(match):
-		txt = re.sub(r'(^)mask_gpu_interrupt0=(.*)($)', r'\1mask_gpu_interrupt0=0x400\3', txt, 0, re.MULTILINE)
-	else:
-		txt = txt.strip() + "\n\n" + "# added for vc4 driver\n" + "mask_gpu_interrupt0=0x400\n"
-		added_comment = 1
+	# this is not necessary anymore with newer firmwares
+	#match = re.findall(r'^mask_gpu_interrupt0=(.*)$', txt, re.MULTILINE)
+	#if 0 < len(match):
+	#	txt = re.sub(r'(^)mask_gpu_interrupt0=(.*)($)', r'\1mask_gpu_interrupt0=0x400\3', txt, 0, re.MULTILINE)
+	#else:
+	#	txt = txt.strip() + "\n\n" + "# added for vc4 driver\n" + "mask_gpu_interrupt0=0x400\n"
+	#	added_comment = 1
 	# set avoid_warnings=2 to remove warning overlay
 	match = re.findall(r'^avoid_warnings=(.*)$', txt, re.MULTILINE)
 	if 0 < len(match):
@@ -606,6 +610,7 @@ def buildIssueJson():
 
 checkRoot()
 updateHostApt()
+updateFirmware()
 updateConfigTxt()
 updateLdConfig()
 enableCoredumps()
