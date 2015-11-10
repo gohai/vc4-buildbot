@@ -107,7 +107,7 @@ def BuildRaspbianImage(overlay):
 	subprocess.check_call("mount -o offset=" + str(RASPBIAN_IMG_START_SECTOR_VFAT * RASPBIAN_IMG_BYTES_PER_SECTOR) + " -t vfat *.img live/boot", shell=True)
 	os.chdir("/tmp/raspbian-vc4/live")
 	# update firmware
-	subprocess.check_call("chroot /tmp/raspbian-vc4/live SKIP_BACKUP=1 rpi-update", shell=True)
+	subprocess.check_call("SKIP_BACKUP=1 chroot /tmp/raspbian-vc4/live rpi-update", shell=True)
 	# change the default X server for startx
 	xserverrc = file_get_contents("/tmp/raspbian-vc4/live/etc/X11/xinit/xserverrc")
 	xserverrc = re.sub('/usr/bin/X', '/usr/local/bin/Xorg', xserverrc)
