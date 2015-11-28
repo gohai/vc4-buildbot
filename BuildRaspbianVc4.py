@@ -191,7 +191,7 @@ def buildLibDrm():
 		subprocess.check_call("git clone git://anongit.freedesktop.org/mesa/drm /usr/local/src/libdrm", shell=True)
 	os.chdir("/usr/local/src/libdrm")
 	subprocess.call("git pull", shell=True)
-	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --disable-vmwgfx --disable-radeon --disable-nouveau", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --disable-amdgpu --disable-freedreno --disable-vmwgfx --disable-radeon --disable-nouveau", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
@@ -333,10 +333,8 @@ def buildRandrProto():
 	os.chdir("/usr/local/src/randrproto")
 	subprocess.call("git pull", shell=True)
 	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
-	subprocess.check_call("make " + MAKE_OPTS, shell=True)
+	# has no make all, make clean
 	subprocess.check_call("make install", shell=True)
-	if CLEANUP:
-		subprocess.check_call("make clean", shell=True)
 	issue['randrproto'] = getGitInfo()
 
 def buildFontsProto():
@@ -455,15 +453,11 @@ def buildLinux():
 	# change localversion
 	subprocess.check_call("sed -i 's/CONFIG_LOCALVERSION=\"\"/CONFIG_LOCALVERSION=\"-2708\"/' .config", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
-	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
 	# remove old kernel versions
 	subprocess.check_call("rm -rf /lib/modules/*-2708*", shell=True)
 	subprocess.check_call("make modules_install", shell=True)
-	subprocess.check_call("make bcm2708-rpi-b.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b.dtb", shell=True)
-	subprocess.check_call("make bcm2708-rpi-b-plus.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/bcm2708-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb", shell=True)
-	subprocess.check_call("make bcm2708-rpi-cm.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/bcm2708-rpi-cm.dtb /boot/bcm2708-rpi-cm.dtb", shell=True)
 	# this signals to the bootloader that device tree is supported
 	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
@@ -480,10 +474,8 @@ def buildLinux():
 	# change localversion
 	subprocess.check_call("sed -i 's/CONFIG_LOCALVERSION=\"-v7\"/CONFIG_LOCALVERSION=\"-2709\"/' .config", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
-	subprocess.check_call("make " + MAKE_OPTS + " modules", shell=True)
 	subprocess.check_call("rm -rf /lib/modules/*-2709*", shell=True)
 	subprocess.check_call("make modules_install", shell=True)
-	subprocess.check_call("make bcm2709-rpi-2-b.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/bcm2709-rpi-2-b.dtb /boot/bcm2709-rpi-2-b.dtb", shell=True)
 	# overlays are automatically generated with DT-enabled configs
 	subprocess.check_call("rm -rf /boot/overlays/*.dtb", shell=True)
@@ -491,8 +483,6 @@ def buildLinux():
 	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel7.img", shell=True)
 	subprocess.check_call("cp .config /boot/kernel7.img-config", shell=True)
-	# build the overlay for the vc4 driver
-	subprocess.check_call("make overlays/vc4-kms-v3d-overlay.dtb", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/overlays/vc4-kms-v3d-overlay.dtb /boot/overlays/", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make mrproper", shell=True)
