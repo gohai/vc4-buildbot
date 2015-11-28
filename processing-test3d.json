@@ -82,6 +82,11 @@
         },
         {
             "ignore": 0,
+            "sketch": "Demos/Graphics/MeshTweening",
+            "renderer": "P3D"
+        },
+        {
+            "ignore": 0,
             "sketch": "Demos/Graphics/Particles",
             "renderer": "P2D"
         },
