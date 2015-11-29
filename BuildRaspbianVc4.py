@@ -104,6 +104,8 @@ def enableCoredumps():
 	file_put_contents("/etc/security/limits.d/coredump.conf", "*\tsoft\tcore\tunlimited")
 
 def enableDebugEnvVars():
+	# MESA_DEBUG macro needs this library for texture compression
+	subprocess.check_call("apt-get -y install libtxc-dxtn-s2tc0", shell=True)
 	out = "export LIBGL_DEBUG=1\n"
 	out += "export MESA_DEBUG=1\n"
 	out += "export EGL_LOG_LEVEL=debug\n"
