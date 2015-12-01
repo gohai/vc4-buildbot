@@ -375,7 +375,7 @@ def buildXServer():
 	subprocess.check_call("git remote set-url origin " + XSERVER_GIT_REPO, shell=True)
 	subprocess.call("git fetch", shell=True)
 	subprocess.check_call("git checkout -f -B " + XSERVER_GIT_BRANCH + " origin/" + XSERVER_GIT_BRANCH, shell=True)
-	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --enable-glamor --enable-dri2 --enable-dri3 --enable-present", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --enable-glamor --enable-dri2 --enable-dri3 --enable-present --disable-unit-tests", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
 	# copy xorg.conf
