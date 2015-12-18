@@ -396,7 +396,7 @@ def buildMesaDemos():
 		subprocess.check_call("git clone git://anongit.freedesktop.org/mesa/demos /usr/local/src/mesa-demos", shell=True)
 	os.chdir("/usr/local/src/mesa-demos")
 	subprocess.call("git pull", shell=True)
-	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local", shell=True)
+	subprocess.check_call("ACLOCAL_PATH=/usr/local/share/aclocal ./autogen.sh --prefix=/usr/local --without-glut", shell=True)
 	subprocess.check_call("make " + MAKE_OPTS, shell=True)
 	subprocess.check_call("make install", shell=True)
 	if CLEANUP:
