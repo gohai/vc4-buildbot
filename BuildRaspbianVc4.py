@@ -638,7 +638,7 @@ buildMesaDemos()
 # xserver modules
 buildLibEvdev()
 buildInputEvdev()
-buildGstreamer()
+#buildGstreamer()
 # build kernel last to minimize window where we would boot an
 # untested kernel on power outage etc
 buildLinux()
