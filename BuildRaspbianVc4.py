@@ -611,8 +611,7 @@ enableCoredumps()
 updateRcLocalForLeds()
 enableDebugEnvVars()
 # build Processing first since chances are that I screwed up somewhere
-# XXX: workaround HTTP error
-#buildExtraProcessing()
+buildExtraProcessing()
 #buildExtraProcessingVideo()
 # mesa and friends
 buildXorgMacros()
