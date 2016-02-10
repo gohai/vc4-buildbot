@@ -644,6 +644,7 @@ buildInputEvdev()
 #buildGstreamer()
 # build kernel last to minimize window where we would boot an
 # untested kernel on power outage etc
-buildLinux()
+# released kernel is up-to-date with git
+#buildLinux()
 
 buildIssueJson()

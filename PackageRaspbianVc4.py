@@ -15,6 +15,7 @@ import re
 import time
 
 # assume BuildRaspbianVc4.py is in the same dir as this one 
+CUSTOM_KERNEL = 0
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 PREFIX = time.strftime("%Y%m%d-%H%M-vc4")
 UPLOAD_HOST = "sukzessiv.net"
@@ -66,7 +67,10 @@ def BuildRaspbianVc4():
 def TarRaspbianVc4():
 	# XXX: optionally include src
 	# XXX: better to temp. move original dir?
-	subprocess.call("tar cfp /tmp/" + PREFIX + "-overlay.tar /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2708-rpi-cm.dtb /boot/bcm2709-rpi-2-b.dtb /boot/config.txt /boot/issue-vc4.json /boot/kernel.img /boot/kernel.img-config /boot/kernel7.img /boot/kernel7.img-config /boot/overlays /etc/ld.so.conf.d/01-libc.conf /etc/profile.d/graphics-debug.sh /etc/rc.local /etc/security/limits.d/coredump.conf /home/pi/processing-test3d.* /lib/modules/*-2708* /lib/modules/*-2709* /usr/local --exclude=\"/usr/local/bin/indiecity\" --exclude=\"/usr/local/games\" --exclude=\"/usr/local/lib/python*\" --exclude=\"/usr/local/lib/site_ruby\" --exclude=\"/usr/local/src\" --exclude=\"/usr/local/sbin\" --exclude=\"/usr/local/share/ca-certificates\" --exclude=\"/usr/local/share/fonts\" --exclude=\"/usr/local/share/sgml\" --exclude=\"/usr/local/share/xml\" >/dev/null", shell=True)
+	if CUSTOM_KERNEL:
+		subprocess.call("tar cfp /tmp/" + PREFIX + "-overlay.tar /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2708-rpi-cm.dtb /boot/bcm2709-rpi-2-b.dtb /boot/config.txt /boot/issue-vc4.json /boot/kernel.img /boot/kernel.img-config /boot/kernel7.img /boot/kernel7.img-config /boot/overlays /etc/ld.so.conf.d/01-libc.conf /etc/profile.d/graphics-debug.sh /etc/rc.local /etc/security/limits.d/coredump.conf /home/pi/processing-test3d.* /lib/modules/*-2708* /lib/modules/*-2709* /usr/local --exclude=\"/usr/local/bin/indiecity\" --exclude=\"/usr/local/games\" --exclude=\"/usr/local/lib/python*\" --exclude=\"/usr/local/lib/site_ruby\" --exclude=\"/usr/local/src\" --exclude=\"/usr/local/sbin\" --exclude=\"/usr/local/share/ca-certificates\" --exclude=\"/usr/local/share/fonts\" --exclude=\"/usr/local/share/sgml\" --exclude=\"/usr/local/share/xml\" >/dev/null", shell=True)
+	else:
+		subprocess.call("tar cfp /tmp/" + PREFIX + "-overlay.tar /boot/config.txt /boot/issue-vc4.json /etc/ld.so.conf.d/01-libc.conf /etc/profile.d/graphics-debug.sh /etc/rc.local /etc/security/limits.d/coredump.conf /home/pi/processing-test3d.* /usr/local --exclude=\"/usr/local/bin/indiecity\" --exclude=\"/usr/local/games\" --exclude=\"/usr/local/lib/python*\" --exclude=\"/usr/local/lib/site_ruby\" --exclude=\"/usr/local/src\" --exclude=\"/usr/local/sbin\" --exclude=\"/usr/local/share/ca-certificates\" --exclude=\"/usr/local/share/fonts\" --exclude=\"/usr/local/share/sgml\" --exclude=\"/usr/local/share/xml\" >/dev/null", shell=True)
 	subprocess.call("bzip2 -9 /tmp/" + PREFIX + "-overlay.tar", shell=True)
 	return "/tmp/" + PREFIX + "-overlay.tar.bz2"
 
@@ -116,10 +120,11 @@ def BuildRaspbianImage(overlay):
 	lightdmconf = file_get_contents("/tmp/raspbian-vc4/live/etc/lightdm/lightdm.conf")
 	lightdmconf = re.sub("#xserver-command=X", "xserver-command=/usr/local/bin/Xorg", lightdmconf)
 	file_put_contents("/tmp/raspbian-vc4/live/etc/lightdm/lightdm.conf", lightdmconf)
-	# remove obsolete DT overlay files
-	subprocess.check_call("rm -Rf /boot/overlays/*.dtb", shell=True)
-	# remove obsolete kernel modules
-	subprocess.check_call("rm -Rf /tmp/raspbian-vc4/live/lib/modules/*", shell=True)
+	if CUSTOM_KERNEL:
+		# remove obsolete DT overlay files
+		subprocess.check_call("rm -Rf /boot/overlays/*.dtb", shell=True)
+		# remove obsolete kernel modules
+		subprocess.check_call("rm -Rf /tmp/raspbian-vc4/live/lib/modules/*", shell=True)
 	subprocess.check_call("tar vfxp " + overlay, shell=True)
 	# install libglew1.7 needed for mesa-demos (seems to be installed by default in Jessie)
 	#subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install libglew1.7", shell=True)
@@ -154,34 +159,36 @@ UploadTempFiles()
 DeleteTempFiles()
 # preserve original kernel and device tree on build machine
 
-if not os.path.exists("/boot/kernel.img.orig"):
-	subprocess.call("cp /boot/kernel.img /boot/kernel.img.orig", shell=True)
-if not os.path.exists("/boot/bcm2708-rpi-b.dtb.orig"):
-	subprocess.call("cp /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b.dtb.orig", shell=True)
-if not os.path.exists("/boot/bcm2708-rpi-b-plus.dtb.orig"):
-	subprocess.call("cp /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb.orig", shell=True)
-if not os.path.exists("/boot/bcm2708-rpi-cm.dtb.orig"):
-	subprocess.call("cp /boot/bcm2708-rpi-cm.dtb /boot/bcm2708-rpi-cm.dtb.orig", shell=True)
-if not os.path.exists("/boot/kernel7.img.orig"):
-	subprocess.call("cp /boot/kernel7.img /boot/kernel7.img.orig", shell=True)
-if not os.path.exists("/boot/bcm2709-rpi-2-b.dtb.orig"):
-	subprocess.call("cp /boot/bcm2709-rpi-2-b.dtb /boot/bcm2709-rpi-2-b.dtb.orig", shell=True)
-if not os.path.exists("/boot/overlays.orig"):
-	subprocess.call("cp -r /boot/overlays /boot/overlays.orig", shell=True)
+if CUSTOM_KERNEL:
+	if not os.path.exists("/boot/kernel.img.orig"):
+		subprocess.call("cp /boot/kernel.img /boot/kernel.img.orig", shell=True)
+	if not os.path.exists("/boot/bcm2708-rpi-b.dtb.orig"):
+		subprocess.call("cp /boot/bcm2708-rpi-b.dtb /boot/bcm2708-rpi-b.dtb.orig", shell=True)
+	if not os.path.exists("/boot/bcm2708-rpi-b-plus.dtb.orig"):
+		subprocess.call("cp /boot/bcm2708-rpi-b-plus.dtb /boot/bcm2708-rpi-b-plus.dtb.orig", shell=True)
+	if not os.path.exists("/boot/bcm2708-rpi-cm.dtb.orig"):
+		subprocess.call("cp /boot/bcm2708-rpi-cm.dtb /boot/bcm2708-rpi-cm.dtb.orig", shell=True)
+	if not os.path.exists("/boot/kernel7.img.orig"):
+		subprocess.call("cp /boot/kernel7.img /boot/kernel7.img.orig", shell=True)
+	if not os.path.exists("/boot/bcm2709-rpi-2-b.dtb.orig"):
+		subprocess.call("cp /boot/bcm2709-rpi-2-b.dtb /boot/bcm2709-rpi-2-b.dtb.orig", shell=True)
+	if not os.path.exists("/boot/overlays.orig"):
+		subprocess.call("cp -r /boot/overlays /boot/overlays.orig", shell=True)
 ret = BuildRaspbianVc4()
 if not ret:
 	# success
 	tar = TarRaspbianVc4()
 	TarProcessing()
-# restore original kernel
-subprocess.call("mv /boot/kernel.img.orig /boot/kernel.img", shell=True)
-subprocess.call("mv /boot/bcm2708-rpi-b.dtb.orig /boot/bcm2708-rpi-b.dtb", shell=True)
-subprocess.call("mv /boot/bcm2708-rpi-b-plus.dtb.orig /boot/bcm2708-rpi-b-plus.dtb", shell=True)
-subprocess.call("mv /boot/bcm2708-rpi-cm.dtb.orig /boot/bcm2708-rpi-cm.dtb", shell=True)
-subprocess.call("mv /boot/kernel7.img.orig /boot/kernel7.img", shell=True)
-subprocess.call("mv /boot/bcm2709-rpi-2-b.dtb.orig /boot/bcm2709-rpi-2-b.dtb", shell=True)
-subprocess.call("rm -rf /boot/overlays", shell=True)
-subprocess.call("mv /boot/overlays.orig /boot/overlays", shell=True)
+if CUSTOM_KERNEL:
+	# restore original kernel
+	subprocess.call("mv /boot/kernel.img.orig /boot/kernel.img", shell=True)
+	subprocess.call("mv /boot/bcm2708-rpi-b.dtb.orig /boot/bcm2708-rpi-b.dtb", shell=True)
+	subprocess.call("mv /boot/bcm2708-rpi-b-plus.dtb.orig /boot/bcm2708-rpi-b-plus.dtb", shell=True)
+	subprocess.call("mv /boot/bcm2708-rpi-cm.dtb.orig /boot/bcm2708-rpi-cm.dtb", shell=True)
+	subprocess.call("mv /boot/kernel7.img.orig /boot/kernel7.img", shell=True)
+	subprocess.call("mv /boot/bcm2709-rpi-2-b.dtb.orig /boot/bcm2709-rpi-2-b.dtb", shell=True)
+	subprocess.call("rm -rf /boot/overlays", shell=True)
+	subprocess.call("mv /boot/overlays.orig /boot/overlays", shell=True)
 if not ret:
 	BuildRaspbianImage(tar)
 ret = UploadTempFiles()
