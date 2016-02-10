@@ -1,3 +1,7 @@
+# IMPORTANT: VC4 driver released as part of Raspbian
+
+Before trying to use this script, give Raspbian release February 2016 a try. [More information](https://www.raspberrypi.org/blog/another-new-raspbian-release/)
+
 # vc4-buildbot
 
 This script is designed to build the latest Kernel, Mesa and XServer packages, along with their dependencies from Git. After compilation the generated files are injected into a current Raspbian image, to be tested on a Raspberry Pi or Raspberry Pi 2.
