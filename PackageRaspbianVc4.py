@@ -138,7 +138,8 @@ def BuildRaspbianImage(overlay):
 	# XXX: vdpau-driver, vdpauinfo
 	#subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install libvdpau1", shell=True)
 	# move the binary graphics driver to disable jogl's auto-detection
-	subprocess.check_call("mv /tmp/raspbian-vc4/live/opt/vc /tmp/raspbian-vc4/live/opt/vc.bak", shell=True)
+	# XXX: guessing raspi-config leaves this intact as well
+	#subprocess.check_call("mv /tmp/raspbian-vc4/live/opt/vc /tmp/raspbian-vc4/live/opt/vc.bak", shell=True)
 	# rebuild ld.so.cache
 	subprocess.check_call("ldconfig -r /tmp/raspbian-vc4/live", shell=True)
 	os.chdir("/tmp/raspbian-vc4")
