@@ -21,9 +21,9 @@ LINUX_GIT_BRANCH_2709 = "rpi-4.4.y"
 MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
 # or "11.1" for the current stable branch
 MESA_GIT_BRANCH = "master"
-PROCESSING_GIT_REPO = "https://github.com/processing/processing.git"
-PROCESSING_GIT_BRANCH = "master"
-PROCESSING_VERSION = "3.0.1"
+PROCESSING_GIT_REPO = "https://github.com/gohai/processing.git"
+PROCESSING_GIT_BRANCH = "arm-work"
+PROCESSING_VERSION = "3.0.2.4"
 XSERVER_GIT_REPO = "git://anongit.freedesktop.org/xorg/xserver"
 XSERVER_GIT_BRANCH = "master"
 DATA_DIR = os.path.dirname(os.path.realpath(__file__))
