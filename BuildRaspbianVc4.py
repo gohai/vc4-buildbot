@@ -50,7 +50,7 @@ def updateHostApt():
 
 def updateFirmware():
 	# mask_gpu_interrupt0 gets obsoleted by a post-Jesse firmware update
-	subprocess.check_call("SKIP_BACKUP=1 rpi-update", shell=True)
+	subprocess.check_call("SKIP_BACKUP=1 SKIP_WARNING=1 rpi-update", shell=True)
 
 def updateConfigTxt():
 	txt = file_get_contents("/boot/config.txt")
