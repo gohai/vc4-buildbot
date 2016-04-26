@@ -15,10 +15,9 @@ import re
 import json
 
 LINUX_GIT_REPO_2708 = "https://github.com/raspberrypi/linux.git"
-# rpi-4.1.y has all the latest vc4 bits, and ships with current Raspbian
-LINUX_GIT_BRANCH_2708 = "rpi-4.1.y"
+LINUX_GIT_BRANCH_2708 = "rpi-4.4.y"
 LINUX_GIT_REPO_2709 = "https://github.com/raspberrypi/linux.git"
-LINUX_GIT_BRANCH_2709 = "rpi-4.1.y"
+LINUX_GIT_BRANCH_2709 = "rpi-4.4.y"
 MESA_GIT_REPO = "git://anongit.freedesktop.org/mesa/mesa"
 # or "11.1" for the current stable branch
 MESA_GIT_BRANCH = "master"
@@ -644,7 +643,6 @@ buildInputEvdev()
 #buildGstreamer()
 # build kernel last to minimize window where we would boot an
 # untested kernel on power outage etc
-# released kernel is up-to-date with git
-#buildLinux()
+buildLinux()
 
 buildIssueJson()

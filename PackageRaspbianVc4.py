@@ -15,7 +15,7 @@ import re
 import time
 
 # assume BuildRaspbianVc4.py is in the same dir as this one 
-CUSTOM_KERNEL = 0
+CUSTOM_KERNEL = 1
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 PREFIX = time.strftime("%Y%m%d-%H%M-vc4")
 UPLOAD_HOST = "sukzessiv.net"
