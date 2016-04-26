@@ -18,6 +18,7 @@ import time
 CUSTOM_KERNEL = 1
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 PREFIX = time.strftime("%Y%m%d-%H%M-vc4")
+UPLOAD = 0
 UPLOAD_HOST = "sukzessiv.net"
 UPLOAD_USER = "vc4-buildbot"
 UPLOAD_KEY = os.path.dirname(os.path.realpath(__file__)) + "/sukzessiv-net.pem"
@@ -156,8 +157,9 @@ def BuildRaspbianImage(overlay):
 # XXX: prepopulate ssh host keys in known_hosts
 checkRoot()
 killHangingBuilds()
-UploadTempFiles()
-DeleteTempFiles()
+if UPLOAD:
+	UploadTempFiles()
+	DeleteTempFiles()
 # preserve original kernel and device tree on build machine
 
 if CUSTOM_KERNEL:
@@ -192,9 +194,10 @@ if CUSTOM_KERNEL:
 	subprocess.call("mv /boot/overlays.orig /boot/overlays", shell=True)
 if not ret:
 	BuildRaspbianImage(tar)
-ret = UploadTempFiles()
-if not ret:
-	DeleteTempFiles()
+if UPLOAD:
+	ret = UploadTempFiles()
+	if not ret:
+		DeleteTempFiles()
 #else:
 #	there might be a temporary connectivity issue
 #	in this case we'll try again next time this script is run
