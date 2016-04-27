@@ -489,7 +489,6 @@ def buildLinux():
 	subprocess.check_call("/usr/local/src/raspberrypi-tools/mkimage/mkknlimg --dtok arch/arm/boot/zImage arch/arm/boot/zImage", shell=True)
 	subprocess.check_call("cp arch/arm/boot/zImage /boot/kernel7.img", shell=True)
 	subprocess.check_call("cp .config /boot/kernel7.img-config", shell=True)
-	subprocess.check_call("cp arch/arm/boot/dts/overlays/vc4-kms-v3d-overlay.dtb /boot/overlays/", shell=True)
 	if CLEANUP:
 		subprocess.check_call("make mrproper", shell=True)
 	issue['linux-2709'] = getGitInfo()
