@@ -481,6 +481,7 @@ def buildLinux():
 	subprocess.check_call("rm -rf /lib/modules/*-2709*", shell=True)
 	subprocess.check_call("make modules_install", shell=True)
 	subprocess.check_call("cp arch/arm/boot/dts/bcm2709-rpi-2-b.dtb /boot/bcm2709-rpi-2-b.dtb", shell=True)
+	subprocess.check_call("cp arch/arm/boot/dts/bcm2710-rpi-3-b.dtb /boot/bcm2710-rpi-3-b.dtb", shell=True)
 	# overlays are automatically generated with DT-enabled configs
 	subprocess.check_call("rm -rf /boot/overlays/*.dtb", shell=True)
 	subprocess.check_call("rm -rf /boot/overlays/*.dtbo", shell=True)
