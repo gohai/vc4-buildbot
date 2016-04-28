@@ -129,16 +129,6 @@ def BuildRaspbianImage(overlay):
 	subprocess.check_call("tar vfxp " + overlay, shell=True)
 	# install libglew1.7 needed for mesa-demos (seems to be installed by default in Jessie)
 	#subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install libglew1.7", shell=True)
-	# install gstreamer0.10 plugins for processing-video
-	# XXX: gstreamer0.10-ffmpeg is no longer available in Jessie
-	#subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly", shell=True)
-	# install libvdpau for gst-plugins-bad (seems to be installed by default in Jessie)
-	# XXX: http://mirrordirector.raspbian.org/raspbian/pool/main/libv/libvdpau/libvdpau1_0.4.1-7_armhf.deb currently gives 404
-	# XXX: vdpau-driver, vdpauinfo
-	#subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install libvdpau1", shell=True)
-	# move the binary graphics driver to disable jogl's auto-detection
-	# XXX: guessing raspi-config leaves this intact as well
-	#subprocess.check_call("mv /tmp/raspbian-vc4/live/opt/vc /tmp/raspbian-vc4/live/opt/vc.bak", shell=True)
 	# rebuild ld.so.cache
 	subprocess.check_call("ldconfig -r /tmp/raspbian-vc4/live", shell=True)
 	os.chdir("/tmp/raspbian-vc4")
