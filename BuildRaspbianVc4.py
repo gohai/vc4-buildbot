@@ -58,14 +58,6 @@ def updateConfigTxt():
 	match = re.findall(r'^# added for vc4 driver$', txt, re.MULTILINE)
 	if 0 < len(match):
 		added_comment = 1
-	# set mask_gpu_interrupt0=0x400
-	# this is not necessary anymore with newer firmwares
-	#match = re.findall(r'^mask_gpu_interrupt0=(.*)$', txt, re.MULTILINE)
-	#if 0 < len(match):
-	#	txt = re.sub(r'(^)mask_gpu_interrupt0=(.*)($)', r'\1mask_gpu_interrupt0=0x400\3', txt, 0, re.MULTILINE)
-	#else:
-	#	txt = txt.strip() + "\n\n" + "# added for vc4 driver\n" + "mask_gpu_interrupt0=0x400\n"
-	#	added_comment = 1
 	# set avoid_warnings=2 to remove warning overlay
 	match = re.findall(r'^avoid_warnings=(.*)$', txt, re.MULTILINE)
 	if 0 < len(match):
@@ -87,13 +79,12 @@ def updateConfigTxt():
 	#		added_comment = 1
 	#	txt = txt + "disable_overscan=1\n"
 	# add vc4 overlay
-	# (this can now be set with raspi-config)
-	#match = re.findall(r'^dtoverlay=vc4-kms-v3d$', txt, re.MULTILINE)
-	#if 0 == len(match):
-	#	if not added_comment:
-	#		txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
-	#		added_comment = 1
-	#	txt = txt + "dtoverlay=vc4-kms-v3d\n"
+	match = re.findall(r'^dtoverlay=vc4-kms-v3d$', txt, re.MULTILINE)
+	if 0 == len(match):
+		if not added_comment:
+			txt = txt.strip() + "\n\n" + "# added for vc4 driver\n"
+			added_comment = 1
+		txt = txt + "dtoverlay=vc4-kms-v3d\n"
 	file_put_contents("/boot/config.txt", txt)
 
 def updateLdConfig():
@@ -106,20 +97,11 @@ def enableCoredumps():
 	file_put_contents("/etc/security/limits.d/coredump.conf", "*\tsoft\tcore\tunlimited")
 
 def enableDebugEnvVars():
-	# MESA_DEBUG macro needs this library for texture compression
-	subprocess.check_call("apt-get -y install libtxc-dxtn-s2tc0", shell=True)
 	out = "export LIBGL_DEBUG=1\n"
 	out += "export MESA_DEBUG=1\n"
 	out += "export EGL_LOG_LEVEL=debug\n"
 	out += "export GLAMOR_DEBUG=1\n"
 	file_put_contents("/etc/profile.d/graphics-debug.sh", out)
-
-def updateUdevGpioRule():
-	# this is needed for recent kernels
-	# proposed fix in https://github.com/raspberrypi/linux/issues/791 didn't work for me
-	udev = file_get_contents("/etc/udev/rules.d/99-com.rules")
-	udev = re.sub('/sys/devices/virtual/gpio\'', '/sys/devices/virtual/gpio; chown -RH root:gpio /sys/class/gpio/* && chmod -R 770 /sys/class/gpio/*\'', udev)
-	file_put_contents("/etc/udev/rules.d/99-com.rules", udev)
 
 def updateRcLocalForLeds():
 	# LEDs can only be controlled by the root user by default
@@ -553,9 +535,7 @@ updateFirmware()
 updateConfigTxt()
 updateLdConfig()
 enableCoredumps()
-# not needed anymore?
-#updateUdevGpioRule()
-updateRcLocalForLeds()
+#updateRcLocalForLeds()
 enableDebugEnvVars()
 # build Processing first since chances are that I screwed up somewhere
 buildExtraProcessing()
