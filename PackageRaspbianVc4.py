@@ -132,8 +132,6 @@ def BuildRaspbianImage(overlay):
 	# install gstreamer0.10 plugins for processing-video
 	# XXX: gstreamer0.10-ffmpeg is no longer available in Jessie
 	#subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install gstreamer0.10-plugins-good gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly", shell=True)
-	# install libtxc-dxtn-s2tc0 to silence Mesa warnings
-	subprocess.check_call("chroot /tmp/raspbian-vc4/live apt-get -y install libtxc-dxtn-s2tc0", shell=True)
 	# install libvdpau for gst-plugins-bad (seems to be installed by default in Jessie)
 	# XXX: http://mirrordirector.raspbian.org/raspbian/pool/main/libv/libvdpau/libvdpau1_0.4.1-7_armhf.deb currently gives 404
 	# XXX: vdpau-driver, vdpauinfo
