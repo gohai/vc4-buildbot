@@ -493,43 +493,6 @@ def buildLinux():
 		subprocess.check_call("make mrproper", shell=True)
 	issue['linux-2709'] = getGitInfo()
 
-def buildGstreamer():
-	# Raspbian seem to have a modified (?) gstreamer-1.0 that hooks into OpenMAX IL
-	# let's see how the latest version of gstreamer performs
-	# this should have support for vdpau and omx, not: vaapi
-	# gst-plugins-bad checks for bcm_init on the host system
-	# vdpau needs libvdpau1 installed on the host system to work (vdpauinfo still complains about a missing libvdpau_vc4.so)
-	# unsure if omx needs libomxil-bellagio0 libomxil-bellagio0-components-* on host system (omx does not show up in gst-inspect-1.0 either way)
-	subprocess.check_call("apt-get -y install libglib2.0-dev libvdpau-dev", shell=True)
-	for pkg in ["gstreamer", "gst-plugins-base", "gst-plugins-good", "gst-plugins-bad", "gst-plugins-ugly", "gst-libav"]:
-		if not os.path.exists("/usr/local/src/" + pkg):
-			# 1.4 is the current stable branch
-			subprocess.check_call("git clone --recursive --branch 1.4 git://anongit.freedesktop.org/gstreamer/" + pkg + " /usr/local/src/" + pkg, shell=True)
-		os.chdir("/usr/local/src/" + pkg)
-		# XXX: what about subprojects
-		subprocess.call("git pull", shell=True)
-		# we're missing gtk-doc-tools, so skip building the docs
-		subprocess.check_call("./autogen.sh --prefix=/usr/local --disable-gtk-doc", shell=True)
-		subprocess.check_call("make " + MAKE_OPTS, shell=True)
-		subprocess.check_call("make install", shell=True)
-		if CLEANUP:
-			subprocess.check_call("make clean", shell=True)
-		subprocess.check_call("ldconfig", shell=True)
-	if not os.path.exists("/usr/local/src/gst-omx"):
-		subprocess.check_call("git clone --recursive git://anongit.freedesktop.org/gstreamer/gst-omx /usr/local/src/gst-omx", shell=True)
-	os.chdir("/usr/local/src/gst-omx")
-	# XXX: what about subprojects
-	subprocess.call("git pull", shell=True)
-	# work around a compilation error
-	# to build a VC IV specific backend: --with-omx-target=rpi
-	# XXX: OMX_VideoExt.h... no, OMX_VIDEO_CodingVP8 is declared... no, OMX_VIDEO_CodingTheora is declared... no
-	subprocess.check_call("CFLAGS=\"-DOMX_VERSION_MAJOR=1 -DOMX_VERSION_MINOR=1 -DOMX_VERSION_REVISION=2 -DOMX_VERSION_STEP=0\" ./autogen.sh --prefix=/usr/local --disable-gtk-doc --with-omx-target=generic", shell=True)
-	subprocess.check_call("make " + MAKE_OPTS, shell=True)
-	subprocess.check_call("make install", shell=True)
-	if CLEANUP:
-		subprocess.check_call("make clean", shell=True)
-	subprocess.check_call("ldconfig", shell=True)
-
 def buildExtraProcessing():
 	subprocess.check_call("apt-get -y install ant", shell=True)
 	# Processing expects this directory to exist as as well
@@ -569,11 +532,6 @@ def buildExtraProcessing():
 	#subprocess.check_call("cp -rf jre/* /usr/local/lib/processing/java", shell=True)
 	#os.chdir("/usr/local/src/processing/build")
 	#subprocess.check_call("rm -rf openjfx*", shell=True)
-	# copy the simplevideo library
-	#subprocess.check_call("wget -q http://github.com/gohai/processing-simplevideo/archive/master.zip", shell=True)
-	#subprocess.check_call("unzip master.zip", shell=True)
-	#subprocess.check_call("mv processing-simplevideo-master /usr/local/lib/processing/modes/java/libraries/simplevideo", shell=True)
-	#subprocess.check_call("rm -f master.zip", shell=True)
 	# copy the test script
 	subprocess.check_call("cp -f " + DATA_DIR + "/processing-test3d.* /home/pi", shell=True)
 	subprocess.check_call("chown pi:pi /home/pi/processing-test3d.*", shell=True)
@@ -581,20 +539,6 @@ def buildExtraProcessing():
 		subprocess.check_call("ant clean", shell=True)
 	# this is currently not working for some reason
 	issue['processing'] = getGitInfo()
-
-def buildExtraProcessingVideo():
-	if not os.path.exists("/usr/local/src/processing-video"):
-		subprocess.check_call("git clone https://github.com/processing/processing-video.git /usr/local/src/processing-video", shell=True)
-	os.chdir("/usr/local/src/processing-video")
-	subprocess.call("git fetch", shell=True)
-	subprocess.check_call("git checkout -f -B master origin/master", shell=True)
-	subprocess.check_call("printf \"core.classpath.location=/usr/local/lib/processing/core/library\\ncompiler.classpath.location=/usr/local/lib/processing/java/mode\" > build.properties", shell=True)
-	subprocess.check_call("ant build", shell=True)
-	subprocess.check_call("mkdir -p /usr/local/lib/processing/modes/java/libraries/video", shell=True)
-	subprocess.check_call("cp -fr examples library library.properties /usr/local/lib/processing/modes/java/libraries/video", shell=True)
-	if CLEANUP:
-		subprocess.check_call("ant clean", shell=True)
-	issue['processing-video'] = getGitInfo()
 
 def buildIssueJson():
 	os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -615,7 +559,6 @@ updateRcLocalForLeds()
 enableDebugEnvVars()
 # build Processing first since chances are that I screwed up somewhere
 buildExtraProcessing()
-#buildExtraProcessingVideo()
 # mesa and friends
 buildXorgMacros()
 buildXcbProto()
@@ -641,7 +584,6 @@ buildMesaDemos()
 # xserver modules
 buildLibEvdev()
 buildInputEvdev()
-#buildGstreamer()
 # build kernel last to minimize window where we would boot an
 # untested kernel on power outage etc
 buildLinux()
