@@ -346,7 +346,7 @@
             "renderer": "P2D"
         },
         {
-            "ignore": 0,
+            "ignore": 1,
             "sketch": "Topics/Shaders/DomeProjection",
             "renderer": "P3D"
         },
